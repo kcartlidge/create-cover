@@ -1,5 +1,4 @@
-﻿using System;
-using CreateCover.Models;
+﻿using CreateCover.Models;
 
 namespace CreateCover
 {
