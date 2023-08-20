@@ -7,13 +7,11 @@ Supports a small selection of themes using a standard (and auto-arranging) layou
 
 ## To generate a cover
 
-Currently *some* details are hard-coded, though the logic is in there to support the
-required options once arguments have been passed through.
-
 Example command:
 
 ```sh
-dotnet run -- -titlefontsize=190 -file=cover.svg -title="Down\nAmong\nthe\nDead Men" -author="Simon R Green" -series="Forest Kingdom 3" -theme=default
+cd <project>
+dotnet run -- -titlefontsize=180 -file=../green-example.svg -title="Down\nAmong\nthe\nDead Men" -author="Simon R Green" -series="Forest Kingdom 3" -theme=green -titlefont="Impact" -authorfont="Verdana" -seriesfont="Verdana"
 ```
 
 ## To convert to a PNG

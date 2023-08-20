@@ -56,7 +56,7 @@ namespace CreateCover.Models
         public string GetSVG()
         {
             var s = new StringBuilder();
-            s.AppendLine($"<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" width=\"{Width}\" height=\"{Height}\">");
+            s.AppendLine($"<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" width=\"{Width}\" height=\"{Height}\" viewBox=\"0 0 {Width} {Height}\">");
             foreach (var step in Steps) s.AppendLine(step.GetSVG());
             s.AppendLine("</svg>");
             return s.ToString();

@@ -30,13 +30,18 @@ class Program
         config.ShowInfo();
         Console.WriteLine();
         Console.WriteLine("THEMES:");
-        Console.WriteLine("  default, dark, blue, green, orange, red, yellow");
+        Console.WriteLine("  " + Theme.GetStandardThemeNames());
 
         // Load and validate.
         config.AddCustomValidator("file", (conf, key, value) =>
         {
             if (Path.GetExtension((string)value).ToLowerInvariant() != ".svg")
                 conf.AddError(key, "should be an SVG file");
+        });
+        config.AddCustomValidator("theme", (conf, key, value) =>
+        {
+            if (Theme.IsStandardTheme((string)value) == false)
+                conf.AddError(key, "sets an unknown theme");
         });
         config.SetFrom(args);
         if (config.HasError)
@@ -50,7 +55,12 @@ class Program
         config.ShowProvided();
         Console.WriteLine();
         Console.WriteLine("Generating SVG cover.");
-        var theme = Theme.Green();
+        var theme = Theme.GetStandardTheme(config.ProvidedStrings["theme"]);
+        if (config.HasInt("titlefontsize")) theme.TitleFontSize = config.ProvidedInts["titlefontsize"];
+        if (config.HasString("titlefont")) theme.TitleFonts = config.ProvidedStrings["titlefont"];
+        if (config.HasString("authorfont")) theme.AuthorFont = config.ProvidedStrings["authorfont"];
+        if (config.HasString("seriesfont")) theme.SeriesFont = config.ProvidedStrings["seriesfont"];
+
         var cover = new Cover(
             900,
             1350,

@@ -10,6 +10,9 @@
         public bool HasError => Errors.Any();
         public Dictionary<string, string> Errors = new();
 
+        public bool HasString(string key) => ProvidedStrings.ContainsKey(key.ToLowerInvariant());
+        public bool HasInt(string key) => ProvidedInts.ContainsKey(key.ToLowerInvariant());
+
         private readonly Dictionary<string, Action<Config, string, object>> CustomValidators = new();
 
         /// <summary>Defines all expected parameters.</summary>

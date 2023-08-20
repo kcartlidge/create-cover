@@ -39,7 +39,37 @@
             };
         }
 
-        public static Theme Monochrome()
+        public static bool IsStandardTheme(string themeName)
+        {
+            return StandardThemes().ContainsKey(themeName.ToLowerInvariant());
+        }
+
+        public static string GetStandardThemeNames()
+        {
+            return string.Join(", ", StandardThemes().Select(x => x.Key));
+        }
+
+        public static Theme GetStandardTheme(string themeName)
+        {
+            return StandardThemes()[themeName.ToLowerInvariant()];
+        }
+
+        private static SortedList<string, Theme> StandardThemes()
+        {
+            var themes = new SortedList<string, Theme>
+            {
+                { "default", Defaults() },
+                { "dark", Dark() },
+                { "blue", Blue() },
+                { "green", Green() },
+                { "red", Red() },
+                { "yellow", Yellow() },
+                { "orange", Orange() },
+            };
+            return themes;
+        }
+
+        private static Theme Defaults()
         {
             return Theme.Create(
                 Color.White,
@@ -53,9 +83,9 @@
                 "Tahoma,Arial");
         }
 
-        public static Theme Dark()
+        private static Theme Dark()
         {
-            var theme = Theme.Monochrome();
+            var theme = Theme.Defaults();
             theme.BackColor = Color.Black;
             theme.ForeColor = Color.White;
             theme.AuthorBackColor = Color.White;
@@ -64,9 +94,9 @@
             return theme;
         }
 
-        public static Theme Blue()
+        private static Theme Blue()
         {
-            var theme = Theme.Monochrome();
+            var theme = Theme.Defaults();
             theme.BackColor = new Color("004488");
             theme.ForeColor = Color.White;
             theme.AuthorBackColor = theme.ForeColor;
@@ -75,9 +105,9 @@
             return theme;
         }
 
-        public static Theme Green()
+        private static Theme Green()
         {
-            var theme = Theme.Monochrome();
+            var theme = Theme.Defaults();
             theme.BackColor = new Color("008844");
             theme.ForeColor = Color.White;
             theme.AuthorBackColor = theme.ForeColor;
@@ -86,9 +116,9 @@
             return theme;
         }
 
-        public static Theme Red()
+        private static Theme Red()
         {
-            var theme = Theme.Monochrome();
+            var theme = Theme.Defaults();
             theme.BackColor = new Color("884444");
             theme.ForeColor = Color.White;
             theme.AuthorBackColor = theme.ForeColor;
@@ -97,9 +127,9 @@
             return theme;
         }
 
-        public static Theme Yellow()
+        private static Theme Yellow()
         {
-            var theme = Theme.Monochrome();
+            var theme = Theme.Defaults();
             theme.BackColor = new Color("DDDD88");
             theme.ForeColor = Color.Black;
             theme.AuthorBackColor = theme.ForeColor;
@@ -108,9 +138,9 @@
             return theme;
         }
 
-        public static Theme Orange()
+        private static Theme Orange()
         {
-            var theme = Theme.Monochrome();
+            var theme = Theme.Defaults();
             theme.BackColor = new Color("FFAA55");
             theme.ForeColor = Color.Black;
             theme.AuthorBackColor = theme.ForeColor;
