@@ -65,9 +65,9 @@ class Program
             900,
             1350,
             theme,
-            config.ProvidedStrings["title"].Replace("\\n", "\n"),
-            config.ProvidedStrings["author"].Replace("\\n", "\n"),
-            config.ProvidedStrings["series"].Replace("\\n", "\n"));
+            config.ProvidedStrings["title"].Replace("\\n", "\n").Replace("|", "\n"),
+            config.ProvidedStrings["author"].Replace("\\n", "\n").Replace("|", "\n"),
+            config.ProvidedStrings["series"].Replace("\\n", "\n").Replace("|", "\n"));
 
         var svgFilename = config.ProvidedStrings["file"];
         cover.Write(svgFilename);
