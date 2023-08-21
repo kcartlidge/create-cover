@@ -1,4 +1,5 @@
-﻿using CreateCover.Models;
+﻿using ArgsParser;
+using CreateCover.Models;
 
 namespace CreateCover;
 
@@ -13,63 +14,76 @@ class Program
     {
         Console.WriteLine();
         Console.WriteLine("CREATE COVER");
+        Console.WriteLine("Generate a 900x1350 pixel SVG book cover");
         Console.WriteLine();
 
         // Define and show command arguments.
-        Config config = new Config(
-            "file=\"cover.svg\" *",
-            "title=\"The Hobbit\" *",
-            "author=\"JRR Tolkien\" *",
-            "series=\"Lord of the Rings 1\" *",
-            "theme=\"default\" *",
-            "titlefontsize=180",
-            "titlefont=\"Impact,Verdana,Tahoma,Arial\"",
-            "authorfont=\"Verdana,Tahoma,Arial\"",
-            "seriesfont=\"Verdana,Tahoma,Arial\""
-        );
-        config.ShowInfo();
+        Console.WriteLine("OPTIONS");
         Console.WriteLine();
-        Console.WriteLine("THEMES:");
+        var parser = new Parser(args)
+            .RequiresOption<string>("file", "where to write the output", "cover.svg")
+            .RequiresOption<string>("title", "the book title (eg \"The | Fellowship | of the | Ring\")")
+            .RequiresOption<string>("author", "the book author (eg \"JRR Tolkien\")")
+            .RequiresOption<string>("series", "the book series (eg \"The Lord of the Rings 1\")")
+            .SupportsOption<string>("theme", "the colour theme", "default")
+            .SupportsOption<int>("titlefontsize", "size of title font in pixels", 180)
+            .SupportsOption<string>("titlefont", "title font names", "Impact,Tahoma,Arial")
+            .SupportsOption<string>("authorfont", "author font names", "Tahoma,Arial")
+            .SupportsOption<string>("seriesfont", "series font names", "Tahoma,Arial")
+            .AddCustomOptionValidator("file", (string key, object filename) =>
+            {
+                var errs = new List<string>();
+                var ext = Path.GetExtension($"{filename}").ToLowerInvariant();
+                if (ext != ".svg") errs.Add($"Not an SVG filename: {filename}");
+                return errs;
+            })
+            .AddCustomOptionValidator("theme", (string key, object themename) =>
+            {
+                var errs = new List<string>();
+                if (Theme.IsStandardTheme((string)themename) == false)
+                    errs.Add($"Unknown theme: {themename}");
+                return errs;
+            })
+        ;
+        parser.Help(2);
+        Console.WriteLine("THEMES");
+        Console.WriteLine();
         Console.WriteLine("  " + Theme.GetStandardThemeNames());
+        Console.WriteLine();
 
         // Load and validate.
-        config.AddCustomValidator("file", (conf, key, value) =>
+        parser.Parse();
+        if (parser.HasErrors)
         {
-            if (Path.GetExtension((string)value).ToLowerInvariant() != ".svg")
-                conf.AddError(key, "should be an SVG file");
-        });
-        config.AddCustomValidator("theme", (conf, key, value) =>
-        {
-            if (Theme.IsStandardTheme((string)value) == false)
-                conf.AddError(key, "sets an unknown theme");
-        });
-        config.SetFrom(args);
-        if (config.HasError)
-        {
-            config.ShowAnyErrors();
+            Console.WriteLine("ERRORS");
+            Console.WriteLine();
+            parser.ShowErrors(2);
             Console.WriteLine();
             return;
         }
 
         // Generate.
-        config.ShowProvided();
+        Console.WriteLine("ARGUMENTS");
+        Console.WriteLine();
+        parser.ShowProvidedArguments(2);
+
         Console.WriteLine();
         Console.WriteLine("Generating SVG cover.");
-        var theme = Theme.GetStandardTheme(config.ProvidedStrings["theme"]);
-        if (config.HasInt("titlefontsize")) theme.TitleFontSize = config.ProvidedInts["titlefontsize"];
-        if (config.HasString("titlefont")) theme.TitleFonts = config.ProvidedStrings["titlefont"];
-        if (config.HasString("authorfont")) theme.AuthorFont = config.ProvidedStrings["authorfont"];
-        if (config.HasString("seriesfont")) theme.SeriesFont = config.ProvidedStrings["seriesfont"];
+        var theme = Theme.GetStandardTheme(parser.GetOption<string>("theme"));
+        if (parser.IsOptionProvided("titlefontsize")) theme.TitleFontSize = parser.GetOption<int>("titlefontsize");
+        if (parser.IsOptionProvided("titlefont")) theme.TitleFonts = parser.GetOption<string>("titlefont");
+        if (parser.IsOptionProvided("authorfont")) theme.AuthorFont = parser.GetOption<string>("authorfont");
+        if (parser.IsOptionProvided("seriesfont")) theme.SeriesFont = parser.GetOption<string>("seriesfont");
 
         var cover = new Cover(
             900,
             1350,
             theme,
-            config.ProvidedStrings["title"].Replace("\\n", "\n").Replace("|", "\n"),
-            config.ProvidedStrings["author"].Replace("\\n", "\n").Replace("|", "\n"),
-            config.ProvidedStrings["series"].Replace("\\n", "\n").Replace("|", "\n"));
+            parser.GetOption<string>("title").Replace("\\n", "\n").Replace("|", "\n"),
+            parser.GetOption<string>("author").Replace("\\n", "\n").Replace("|", "\n"),
+            parser.GetOption<string>("series").Replace("\\n", "\n").Replace("|", "\n"));
 
-        var svgFilename = config.ProvidedStrings["file"];
+        var svgFilename = parser.GetOption<string>("file");
         cover.Write(svgFilename);
 
         // Confirm.

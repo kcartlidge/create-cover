@@ -54,9 +54,9 @@
             return StandardThemes()[themeName.ToLowerInvariant()];
         }
 
-        private static SortedList<string, Theme> StandardThemes()
+        private static Dictionary<string, Theme> StandardThemes()
         {
-            var themes = new SortedList<string, Theme>
+            var themes = new Dictionary<string, Theme>
             {
                 { "default", Defaults() },
                 { "dark", Dark() },

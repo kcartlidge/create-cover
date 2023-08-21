@@ -14,6 +14,7 @@ Supports a small selection of themes using a standard (and auto-arranging) layou
     - [Exclamation marks](#exclamation-marks)
 - [To convert to a PNG](#to-convert-to-a-png)
 - [Examples](#examples)
+- [Generating new builds](#generating-new-builds)
 
 ## Pre-built binaries
 
@@ -23,6 +24,7 @@ They *do not* require dotnet to be installed and are runnable from anywhere your
 ### Run from anywhere
 
 As builds are pretty small you can include ones for relevant platforms directly into your own book project tooling/repositories. Alternatively, you can copy a build to somewhere accessible via your system path so you can run it from anywhere. Here's an example on a Mac:
+If you need new builds see the [generating new builds](#generating-new-builds) section.
 
 ```sh
 cd <solution>
@@ -36,37 +38,48 @@ On Windows place it anywhere convenient. Use your *Control Panel*'s *Environment
 
 ## To generate a cover
 
-Example command for when running directly from source (with dotnet 7+ installed):
+Example commands (simple then more complete) for when running directly from source (with dotnet 7+ installed):
 
 ```sh
 cd <project>
-dotnet run -- -titlefontsize=180 -file="../example-blue.svg" -title="Down\nAmong\nthe\nDead Men" -author="Simon R Green" -series="Forest Kingdom 3" -theme="blue" -titlefont="Impact" -authorfont="Verdana" -seriesfont="Verdana"
+dotnet run -- -title "Down|Among|the|Dead Men" -author "Simon R Green" -series "Forest Kingdom 3" -theme "blue"
+dotnet run -- -titlefontsize 180 -file "../example-blue.svg" -title "Down\nAmong\nthe\nDead Men" -author "Simon R Green" -series "Forest Kingdom 3" -theme "blue" -titlefont "Impact" -authorfont "Verdana" -seriesfont "Verdana"
 ```
 
 If you've added it to your path it's simpler (no dotnet installation required):
 
 ```sh
 cd <wherever>
-CreateCover -titlefontsize=180 -file="cover.svg" -title="Down\nAmong\nthe\nDead Men" -author="Simon R Green" -series="Forest Kingdom 3" -theme="orange" -titlefont="Impact" -authorfont="Verdana" -seriesfont="Verdana"
+CreateCover -title "Down|Among|the|Dead Men" -author "Simon R Green" -series "Forest Kingdom 3" -theme "blue"
+CreateCover -titlefontsize 180 -file "cover.svg" -title "Down\nAmong\nthe\nDead Men" -author "Simon R Green" -series "Forest Kingdom 3" -theme "orange" -titlefont "Impact" -authorfont "Verdana" -seriesfont "Verdana"
 ```
 
 ### Supported options
 
-ARGUMENTS:
+Running `CreateCover` displays the following:
 
-| Option           | Req? | Type    | Example                         |
-|:---------------- |:---- |:------- |:------------------------------- |
-| `-file`          | yes  | string  | `"cover.svg"`                   |
-| `-title`         | yes  | string  | `"The \n Hobbit"`               |
-| `-author`        | yes  | string  | `"JRR Tolkien"`                 |
-| `-series`        | yes  | string  | `"Lord of the Rings 1"`         |
-| `-theme`         | yes  | string  | `"default"`                     |
-| `-titlefontsize` |      | integer | `180`                           |
-| `-titlefont`     |      | string  | `"Impact,Verdana,Tahoma,Arial"` |
-| `-authorfont`    |      | string  | `"Verdana,Tahoma,Arial"`        |
-| `-seriesfont`    |      | string  | `"Verdana,Tahoma,Arial"`        |
+```
+CREATE COVER
+Generate a 900x1350 pixel SVG book cover
 
-THEMES: `blue`, `dark`, `default`, `green`, `orange`, `red`, `yellow`
+OPTIONS
+
+  -author         text     * the book author (eg "JRR Tolkien")  
+  -file           text     * where to write the output  [cover.svg]
+  -series         text     * the book series (eg "The Lord of the Rings 1")  
+  -title          text     * the book title (eg "The | Fellowship | of the | Ring")  
+  -authorfont     text       author font names  [Tahoma,Arial]
+  -seriesfont     text       series font names  [Tahoma,Arial]
+  -theme          text       the colour theme  [default]
+  -titlefont      text       title font names  [Impact,Tahoma,Arial]
+  -titlefontsize  integer    size of title font in pixels  [180]
+
+  * means required, values in square brackets are defaults
+
+THEMES
+
+  default, dark, blue, green, red, yellow, orange
+```
 
 The `title`, `author`, and `series` all support including either a pipe symbol (`|`) or `\n` as a line break.  In the example above of `The \n Hobbit` (which could also be written as `The | Hobbit`) when the title is added to the cover the text will wrap onto a new line where the `\n` or `|` appears (extra spacing around them is ignored).
 
@@ -98,3 +111,22 @@ Another option which often works is to use the double quotes but with an *escape
 
 ### `-theme=green`
 ![green example](example-green.svg)
+
+## Generating new builds
+
+There are scripts available which will work on Linux, Mac, and Windows.
+Run the one *for your platform* and it will produce new builds for all three.
+
+### Linux and Mac
+
+```sh
+cd <solution>/CreateCover
+./build.sh
+```
+
+### Windows
+
+```bat
+cd <solution>\CreateCover
+build.bat
+```
