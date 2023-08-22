@@ -1,45 +1,51 @@
 ﻿namespace CreateCover.Models
 {
-    public class Rectangle : IStepType
+    /// <summary>Encapsulates a complete rectangle (optionally filled).</summary>
+    public class Rectangle : ISVGElement
     {
         public int X1 = 1;
         public int Y1 = 1;
         public int X2 = 1;
         public int Y2 = 1;
+        public Color? BorderColor;
+        public Color? FillColor;
         public int StrokeWidth = 1;
 
-        public int Width => X2 - X1 + 1;
-        public int Height => Y2 - Y1 + 1;
+        public int Width => BoundingBox.Width;
+        public int Height => BoundingBox.Height;
 
-        public bool Filled = false;
-        public Colors Colors = new Colors();
+        public bool Filled => FillColor != null;
+        public Extent BoundingBox => new Extent(X1, Y1, X2, Y2);
 
-        public List<Line> AsLines =>
-            new()
-            {
-                new Line(X1, Y1, X2, Y1),  // top
-                new Line(X1, Y2, X2, Y2),  // bottom
-                new Line(X1, Y1, X1, Y2),  // left
-                new Line(X2, Y1, X2, Y2),  // right
-            };
-
-        public Rectangle(int x1, int y1, int x2, int y2)
+        /// <summary>
+        /// Start a new rectangle.
+        /// If you specify a fillColor it will be solid.
+        /// </summary>
+        public Rectangle(
+            Extent boundingBox,
+            Color? borderColor,
+            Color? fillColor = null,
+            int strokeWidth = 15)
         {
-            X1 = x1;
-            Y1 = y1;
-            X2 = x2;
-            Y2 = y2;
+            X1 = boundingBox.X1;
+            Y1 = boundingBox.Y1;
+            X2 = boundingBox.X2;
+            Y2 = boundingBox.Y2;
+            BorderColor = borderColor;
+            FillColor = fillColor;
+            StrokeWidth = strokeWidth;
+        }
+
+        /// <summary>Get the SVG source.</summary>
+        public string GetSVG()
+        {
+            var fill = Filled ? $"{FillColor}" : "none";
+            return $"<rect fill=\"{fill}\" stroke=\"{BorderColor}\" stroke-width=\"{StrokeWidth}\" x=\"{X1}\" y=\"{Y1}\" width=\"{Width}\" height=\"{Height}\"></rect>";
         }
 
         public override string ToString()
         {
-            return $"RECT {X1},{Y1} -> {X2},{Y2} ({Colors})";
-        }
-
-        public string GetSVG()
-        {
-            var fill = Filled ? $"{Colors.BackColor}" : "none";
-            return $"<rect fill=\"{fill}\" stroke=\"{Colors.ForeColor}\" stroke-width=\"{StrokeWidth}\" x=\"{X1}\" y=\"{Y1}\" width=\"{Width}\" height=\"{Height}\"></rect>";
+            return $"RECT {BoundingBox}  EDGE {BorderColor}  FILL {FillColor}  SOLID {Filled})";
         }
     }
 }

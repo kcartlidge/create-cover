@@ -1,5 +1,9 @@
 ﻿namespace CreateCover.Models
 {
+    /// <summary>
+    /// Encapsulates a theme.
+    /// Also has static methods to return one or more standard schemes.
+    /// </summary>
     public class Theme
     {
         public Color BackColor = Color.White;
@@ -9,11 +13,14 @@
         public Color BorderColor = Color.Black;
 
         public string TitleFonts = "";
-        public int TitleFontSize;
-
         public string AuthorFont = "";
         public string SeriesFont = "";
 
+        public int TitleFontSize;
+        public int AuthorFontSize;
+        public int SeriesFontSize;
+
+        /// <summary>Start a new scheme.</summary>
         public static Theme Create(
             Color backColor,
             Color foreColor,
@@ -21,9 +28,11 @@
             Color authorForeColor,
             Color borderColor,
             string titleFonts,
-            int titleFontSize,
             string authorFont,
-            string seriesFont)
+            string seriesFont,
+            int titleFontSize,
+            int authorFontSize,
+            int seriesFontSize)
         {
             return new Theme
             {
@@ -33,22 +42,27 @@
                 AuthorForeColor = authorForeColor,
                 BorderColor = borderColor,
                 TitleFonts = titleFonts,
-                TitleFontSize = titleFontSize,
                 AuthorFont = authorFont,
                 SeriesFont = seriesFont,
+                TitleFontSize = titleFontSize,
+                AuthorFontSize = authorFontSize,
+                SeriesFontSize = seriesFontSize,
             };
         }
 
+        /// <summary>Is this a known standard scheme?</summary>
         public static bool IsStandardTheme(string themeName)
         {
             return StandardThemes().ContainsKey(themeName.ToLowerInvariant());
         }
 
+        /// <summary>Get the collection of known standard schemes.</summary>
         public static string GetStandardThemeNames()
         {
             return string.Join(", ", StandardThemes().Select(x => x.Key));
         }
 
+        /// <summary>Return the named standard scheme.</summary>
         public static Theme GetStandardTheme(string themeName)
         {
             return StandardThemes()[themeName.ToLowerInvariant()];
@@ -78,9 +92,11 @@
                 Color.White,
                 Color.Black,
                 "Impact,Tahoma,Arial",
-                180,
                 "Tahoma,Arial",
-                "Tahoma,Arial");
+                "Tahoma,Arial",
+                0,
+                0,
+                0);
         }
 
         private static Theme Dark()

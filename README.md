@@ -38,12 +38,11 @@ On Windows place it anywhere convenient. Use your *Control Panel*'s *Environment
 
 ## To generate a cover
 
-Example commands (simple then more complete) for when running directly from source (with dotnet 7+ installed):
+Example commands for when running directly from source (with dotnet 7+ installed):
 
 ```sh
 cd <project>
 dotnet run -- -title "Down|Among|the|Dead Men" -author "Simon R Green" -series "Forest Kingdom 3" -theme "blue"
-dotnet run -- -titlefontsize 180 -file "../example-blue.svg" -title "Down\nAmong\nthe\nDead Men" -author "Simon R Green" -series "Forest Kingdom 3" -theme "blue" -titlefont "Impact" -authorfont "Verdana" -seriesfont "Verdana"
 ```
 
 If you've added it to your path it's simpler (no dotnet installation required):
@@ -51,7 +50,6 @@ If you've added it to your path it's simpler (no dotnet installation required):
 ```sh
 cd <wherever>
 CreateCover -title "Down|Among|the|Dead Men" -author "Simon R Green" -series "Forest Kingdom 3" -theme "blue"
-CreateCover -titlefontsize 180 -file "cover.svg" -title "Down\nAmong\nthe\nDead Men" -author "Simon R Green" -series "Forest Kingdom 3" -theme "orange" -titlefont "Impact" -authorfont "Verdana" -seriesfont "Verdana"
 ```
 
 ### Supported options
@@ -64,15 +62,17 @@ Generate a 900x1350 pixel SVG book cover
 
 OPTIONS
 
-  -author         text     * the book author (eg "JRR Tolkien")  
-  -file           text     * where to write the output  [cover.svg]
-  -series         text     * the book series (eg "The Lord of the Rings 1")  
-  -title          text     * the book title (eg "The | Fellowship | of the | Ring")  
-  -authorfont     text       author font names  [Tahoma,Arial]
-  -seriesfont     text       series font names  [Tahoma,Arial]
-  -theme          text       the colour theme  [default]
-  -titlefont      text       title font names  [Impact,Tahoma,Arial]
-  -titlefontsize  integer    size of title font in pixels  [180]
+  -author          text     * the book author (eg "JRR Tolkien")  
+  -file            text     * where to write the output  [cover.svg]
+  -series          text     * the book series (eg "The Lord of the Rings 1")  
+  -title           text     * the book title (eg "The | Fellowship | of the | Ring")  
+  -authorfont      text       author font names  [Tahoma,Arial]
+  -authorfontsize  integer    size of author font in pixels  [90]
+  -seriesfont      text       series font names  [Tahoma,Arial]
+  -seriesfontsize  integer    size of series font in pixels  [90]
+  -theme           text       the colour theme  [default]
+  -titlefont       text       title font names  [Impact,Tahoma,Arial]
+  -titlefontsize   integer    size of title font in pixels  [180]
 
   * means required, values in square brackets are defaults
 
@@ -82,7 +82,6 @@ THEMES
 ```
 
 The `title`, `author`, and `series` all support including either a pipe symbol (`|`) or `\n` as a line break.  In the example above of `The \n Hobbit` (which could also be written as `The | Hobbit`) when the title is added to the cover the text will wrap onto a new line where the `\n` or `|` appears (extra spacing around them is ignored).
-
 In combination with the `titlefontsize` this allows adjusting the size and layout of the title for the best use of the space allocated on the cover image.
 
 ### Exclamation marks

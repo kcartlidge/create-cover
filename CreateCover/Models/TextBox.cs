@@ -1,73 +1,56 @@
-﻿namespace CreateCover.Models
-{
-    public class TextBox : IStepType
-    {
-        public int X1 = 1;
-        public int Y1 = 1;
-        public int X2 = 1;
-        public int Y2 = 1;
-        public string FontFamily = "Verdana";
-        public Anchor Anchor = Anchor.None;
-        public Color ForeColor = Color.Black;
-        public string Content = "";
-        public bool IsBold = false;
+﻿using System.Text;
 
-        private int? FontSize = null;
+namespace CreateCover.Models
+{
+    public class TextBox : ISVGElement
+    {
+        public SVG Surface { get; private set; }
+        public Extent BoundingBox { get; private set; }
+        public Extent TextArea { get; private set; }
+        public string FontNames { get; private set; }
+        public int FontSize { get; private set; }
+        public bool IsBold { get; private set; }
+        public int PadX { get; private set; }
+        public int PadY { get; private set; }
+        public Color BackColor { get; private set; }
+        public Color ForeColor { get; private set; }
+
+        private Rectangle Background;
+        private List<Text> Content;
 
         public TextBox(
-            int x1,
-            int y1,
-            int x2,
-            int y2,
-            string fontName,
-            Anchor anchor,
-            string content)
+            int x1, int y1, int x2, int y2, int padX, int padY,
+            string text, string fontNames, int fontSize, bool isBold,
+            Color backColor, Color foreColor)
         {
-            X1 = x1;
-            Y1 = y1;
-            X2 = x2;
-            Y2 = y2;
-            FontFamily = fontName;
-            Anchor = anchor;
-            Content = content.Trim();
-        }
+            BoundingBox = new Extent(x1, y1, x2, y2);
+            FontNames = fontNames;
+            FontSize = fontSize;
+            IsBold = isBold;
+            PadX = padX;
+            PadY = padY;
+            BackColor = backColor;
+            ForeColor = foreColor;
+            Background = new Rectangle(BoundingBox, BackColor, BackColor);
+            Content = new List<Text>();
 
-        public void ForceFontSize(int fontSizeInPixels)
-        {
-            FontSize = fontSizeInPixels;
-        }
-
-        public override string ToString()
-        {
-            return $"TEXT {X1},{Y1} -> {X2},{Y2} {FontFamily} ({ForeColor}, anchor {Anchor})";
+            var innerArea = new Extent(x1 + PadX, y1 + PadY, x2 - PadX, y2 - PadY);
+            var lines = text.Split("\n", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            var titleTextTop = y1 + (innerArea.Height - FontSize * lines.Length) / 2;
+            for (var i = 0; i < lines.Length; i++)
+            {
+                var lineY = titleTextTop + i * FontSize;
+                var lineArea = new Extent(innerArea.X1, lineY, innerArea.X2, lineY + FontSize);
+                Content.Add(new Text(lineArea, Anchor.Middle, FontNames, FontSize, IsBold, ForeColor, lines[i]));
+            }
         }
 
         public string GetSVG()
         {
-            var anch = this.Anchor.ToString().ToLower();
-
-            // Max width is 85% of the text box width.
-            var textLength = ((X2 - X1) * 85) / 100;
-
-            // Font size is 85% of the text box height.
-            var fontSize = ((Y2 - Y1) * 85) / 100;
-
-            // Unless overridden!
-            fontSize = FontSize ?? fontSize;
-
-            // Font X is dependent upon the anchor position.
-            var x = X1;
-            if (this.Anchor == Anchor.Middle) x = (X2 - X1) / 2;
-            if (this.Anchor == Anchor.Right) x = X2;
-
-            // Text Y is where the font baseline goes.
-            // This will be the bottom minus 20% of the height.
-            var y = Y2 - ((Y2 - Y1) * 20) / 100;
-
-            var bold = IsBold ? " font-weight=\"bold\"" : "";
-            var adjust = FontSize == null ? " lengthAdjust=\"spacingAndGlyphs\"" : "";
-            var txtLen = FontSize == null ? $" textLength=\"{textLength}\"" : "";
-            return $"<text{bold}{adjust}{txtLen} x=\"{x}\" y=\"{y}\" font-family=\"{FontFamily}\" font-size=\"{fontSize}px\" text-anchor=\"{anch}\" fill=\"{ForeColor}\">{Content}</text>";
+            StringBuilder svg = new StringBuilder();
+            svg.AppendLine(Background.GetSVG());
+            foreach (var item in Content) svg.AppendLine(item.GetSVG());
+            return svg.ToString();
         }
     }
 }
