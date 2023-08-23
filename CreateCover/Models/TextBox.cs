@@ -45,11 +45,11 @@ namespace CreateCover.Models
             }
         }
 
-        public string GetSVG()
+        public string GetSVG(bool debugInfo)
         {
             StringBuilder svg = new StringBuilder();
-            svg.AppendLine(Background.GetSVG());
-            foreach (var item in Content) svg.AppendLine(item.GetSVG());
+            svg.AppendLine(Background.GetSVG(debugInfo));
+            foreach (var item in Content) svg.AppendLine(item.GetSVG(debugInfo));
             return svg.ToString();
         }
     }

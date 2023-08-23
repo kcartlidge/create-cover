@@ -3,6 +3,6 @@
     /// <summary>Interface for all supported SVG elements.</summary>
     public interface ISVGElement
     {
-        string GetSVG();
+        string GetSVG(bool debugInfo);
     }
 }

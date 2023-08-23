@@ -12,8 +12,8 @@
         public bool IsBold { get; private set; }
         public Color ForeColor { get; private set; }
         public string Content { get; private set; }
-        public string Snippet => Content?.Length > 15
-            ? ((Content ?? "").Substring(0, 15) + " ...")
+        public string Snippet => Content?.Length > 10
+            ? ((Content ?? "").Substring(0, 10).TrimEnd() + "...")
             : Content ?? "";
 
         private int TextX = 0;
@@ -53,8 +53,10 @@
         }
 
         /// <summary>Get the SVG source.</summary>
-        public string GetSVG()
+        public string GetSVG(bool debugInfo)
         {
+            if (debugInfo) Console.WriteLine(this);
+
             var anch = this.Anchor.ToString().ToLower();
             var bold = IsBold ? " font-weight=\"bold\"" : "";
             var txtLen = Scalable ? $" textLength=\"{BoundingBox.Width}\"" : "";

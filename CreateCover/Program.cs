@@ -31,6 +31,7 @@ class Program
             .SupportsOption<int>("authorfontsize", "size of author font in pixels", 90)
             .SupportsOption<string>("seriesfont", "series font names", "Tahoma,Arial")
             .SupportsOption<int>("seriesfontsize", "size of series font in pixels", 90)
+            .SupportsFlag("debug", "show extra debugging info")
             .AddCustomOptionValidator("file", (string key, object filename) =>
             {
                 var errs = new List<string>();
@@ -90,7 +91,7 @@ class Program
 
         // Output.
         var svgFilename = parser.GetOption<string>("file");
-        cover.Write(svgFilename);
+        cover.Write(svgFilename, parser.IsFlagProvided("debug"));
 
         // Confirm.
         Console.WriteLine($"Written SVG to {Path.GetFullPath(svgFilename)}");

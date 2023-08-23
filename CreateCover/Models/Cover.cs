@@ -29,7 +29,7 @@
         }
 
         /// <summary>Write the SVG to the named file.</summary>
-        public void Write(string filename)
+        public void Write(string filename, bool debugInfo = false)
         {
             // Predefined stuff.
             var padX = 25;
@@ -67,7 +67,9 @@
             // Add the border.
             svg.Add(new Rectangle(svg.BoundingBox, theme.BorderColor));
 
-            File.WriteAllText(filename, svg.GetSVG());
+            if (debugInfo) Console.WriteLine();
+            File.WriteAllText(filename, svg.GetSVG(debugInfo));
+            if (debugInfo) Console.WriteLine();
         }
     }
 }

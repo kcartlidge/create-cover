@@ -23,7 +23,7 @@
 
         public override string ToString()
         {
-            return $"{X1},{Y1} -> {X2},{Y2} (W{Width}xH{Height})";
+            return $"{X1},{Y1} -> {X2},{Y2}  {Width}x{Height}";
         }
     }
 }

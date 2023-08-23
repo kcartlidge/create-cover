@@ -36,18 +36,20 @@ namespace CreateCover.Models
         }
 
         /// <summary>Get the SVG source.</summary>
-        public string GetSVG()
+        public string GetSVG(bool debugInfo)
         {
+            if (debugInfo) Console.WriteLine(this);
+
             var s = new StringBuilder();
             s.AppendLine($"<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" width=\"{Width}\" height=\"{Height}\" viewBox=\"0 0 {Width} {Height}\">");
-            foreach (var step in Elements) s.AppendLine(step.GetSVG());
+            foreach (var step in Elements) s.AppendLine(step.GetSVG(debugInfo));
             s.AppendLine("</svg>");
             return s.ToString();
         }
 
         public override string ToString()
         {
-            return $"{Width},{Height} ({ForeColor} on {BackColor})";
+            return $"SVG {BoundingBox}  {ForeColor} ON {BackColor}  ELEMENTS {Elements.Count}";
         }
     }
 }
