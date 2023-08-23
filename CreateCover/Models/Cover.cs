@@ -10,6 +10,8 @@
         private readonly string titleText;
         private readonly string authorText;
         private readonly string seriesText;
+        private readonly bool scaleAuthor;
+        private readonly bool scaleSeries;
 
         /// <summary>Start an SVG cover.</summary>
         public Cover(
@@ -18,7 +20,9 @@
             Theme theme,
             string titleText,
             string authorText,
-            string seriesText)
+            string seriesText,
+            bool scaleAuthor,
+            bool scaleSeries)
         {
             this.width = width;
             this.height = height;
@@ -26,25 +30,27 @@
             this.titleText = titleText;
             this.authorText = authorText;
             this.seriesText = seriesText;
+            this.scaleAuthor = scaleAuthor;
+            this.scaleSeries = scaleSeries;
         }
 
         /// <summary>Write the SVG to the named file.</summary>
         public void Write(string filename, bool debugInfo = false)
         {
             // Predefined stuff.
-            var padX = 25;
+            var padX = 75;
             var titlePadY = 10;
             var authorPadY = 10;
             var seriesPadY = 10;
 
             // Stripe vertical positioning.
             var slice = height / 8;
-            var titleTop = titlePadY;
-            var titleBase = slice * 6 - titlePadY;
-            var authorTop = slice * 6 + authorPadY;
-            var authorBase = slice * 7 - authorPadY;
-            var seriesTop = slice * 7 + seriesPadY;
-            var seriesBase = slice * 8 - seriesPadY;
+            var titleTop = 0;
+            var titleBase = slice * 6;
+            var authorTop = slice * 6;
+            var authorBase = slice * 7;
+            var seriesTop = slice * 7;
+            var seriesBase = slice * 8;
 
             // Create the blocks with their text content.
             var titleBlock = new TextBox(
@@ -52,10 +58,12 @@
                 theme.TitleFonts, theme.TitleFontSize, true, theme.BackColor, theme.ForeColor);
             var authorBlock = new TextBox(
                 0, authorTop, width - 1, authorBase, padX, authorPadY, authorText,
-                theme.AuthorFont, theme.AuthorFontSize, true, theme.AuthorBackColor, theme.AuthorForeColor);
+                theme.AuthorFont, theme.AuthorFontSize, false, theme.AuthorBackColor,
+                theme.AuthorForeColor, scaleAuthor);
             var seriesBlock = new TextBox(
                 0, seriesTop, width - 1, seriesBase, padX, seriesPadY, seriesText,
-                theme.SeriesFont, theme.SeriesFontSize, false, theme.BackColor, theme.ForeColor);
+                theme.SeriesFont, theme.SeriesFontSize, false, theme.BackColor,
+                theme.ForeColor, scaleSeries);
 
             // Start the SVG and add the sections.
             var svg = new SVG(width, height, theme.BackColor, theme.ForeColor);

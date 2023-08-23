@@ -42,8 +42,9 @@ namespace CreateCover.Models
 
             var s = new StringBuilder();
             s.AppendLine($"<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" width=\"{Width}\" height=\"{Height}\" viewBox=\"0 0 {Width} {Height}\">");
-            foreach (var step in Elements) s.AppendLine(step.GetSVG(debugInfo));
-            s.AppendLine("</svg>");
+            foreach (var step in Elements) s.Append(step.GetSVG(debugInfo));
+            s.AppendLine();
+            s.Append("</svg>");
             return s.ToString();
         }
 

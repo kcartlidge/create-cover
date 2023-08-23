@@ -10,6 +10,8 @@
 
         public int Width => X2 - X1 + 1;
         public int Height => Y2 - Y1 + 1;
+
+        public int MiddleX => X1 + (Width / 2);
         public int MiddleY => Y1 + (Height / 2);
 
         /// <summary>Start a new extent for the given area.</summary>
@@ -23,7 +25,7 @@
 
         public override string ToString()
         {
-            return $"{X1},{Y1} -> {X2},{Y2}  {Width}x{Height}";
+            return $"{X1},{Y1} -> {X2},{Y2}  {Width}x{Height} CENTRE {MiddleX},{MiddleY}";
         }
     }
 }

@@ -60,9 +60,18 @@
             var anch = this.Anchor.ToString().ToLower();
             var bold = IsBold ? " font-weight=\"bold\"" : "";
             var txtLen = Scalable ? $" textLength=\"{BoundingBox.Width}\"" : "";
+            var baseLine = " alignment-baseline=\"central\"";
             var adjust = Scalable ? " lengthAdjust=\"spacingAndGlyphs\"" : "";
+            var y = BoundingBox.MiddleY;
 
-            return $"<text{bold}{adjust}{txtLen} x=\"{TextX}\" y=\"{TextY}\" font-family=\"{FontNames}\" font-size=\"{FontSize}px\" text-anchor=\"{anch}\" fill=\"{ForeColor}\">{Content}</text>";
+            var svg = "";
+            if (debugInfo)
+            {
+                var box = new Rectangle(BoundingBox, ForeColor, null, 5);
+                svg += box.GetSVG(false);
+            }
+            svg += $"<text{bold}{adjust}{baseLine}{txtLen} x=\"{TextX}\" y=\"{y}\" font-family=\"{FontNames}\" font-size=\"{FontSize}px\" text-anchor=\"{anch}\" fill=\"{ForeColor}\">{Content}</text>";
+            return svg;
         }
 
         public override string ToString()

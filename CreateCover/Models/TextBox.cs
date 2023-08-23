@@ -21,7 +21,7 @@ namespace CreateCover.Models
         public TextBox(
             int x1, int y1, int x2, int y2, int padX, int padY,
             string text, string fontNames, int fontSize, bool isBold,
-            Color backColor, Color foreColor)
+            Color backColor, Color foreColor, bool scalable = false)
         {
             BoundingBox = new Extent(x1, y1, x2, y2);
             FontNames = fontNames;
@@ -41,7 +41,7 @@ namespace CreateCover.Models
             {
                 var lineY = titleTextTop + i * FontSize;
                 var lineArea = new Extent(innerArea.X1, lineY, innerArea.X2, lineY + FontSize);
-                Content.Add(new Text(lineArea, Anchor.Middle, FontNames, FontSize, IsBold, ForeColor, lines[i]));
+                Content.Add(new Text(lineArea, Anchor.Middle, FontNames, FontSize, IsBold, ForeColor, lines[i], scalable));
             }
         }
 

@@ -27,9 +27,10 @@ As builds are pretty small you can include ones for relevant platforms directly 
 If you need new builds see the [generating new builds](#generating-new-builds) section.
 
 ```sh
-cd <solution>
+cd <project>
 sudo rm -rf /usr/local/bin/CreateCover
-sudo cp builds/macos-arm64/CreateCover /usr/local/bin/CreateCover
+sudo cp ../builds/macos-arm64/CreateCover /usr/local/bin/CreateCover
+CreateCover
 ```
 
 On Linux the commands should be similar though the binary copied will obviously not be the Mac one.
@@ -42,14 +43,14 @@ Example commands for when running directly from source (with dotnet 7+ installed
 
 ```sh
 cd <project>
-dotnet run -- -title "Down|Among|the|Dead Men" -author "Simon R Green" -series "Forest Kingdom 3" -theme "blue"
+dotnet run -- -title "Down|Among|the|Dead Men" -author "SIMON R GREEN" -series "Forest Kingdom 3" -theme "blue" -scaleauthor -scaleseries
 ```
 
 If you've added it to your path it's simpler (no dotnet installation required):
 
 ```sh
 cd <wherever>
-CreateCover -title "Down|Among|the|Dead Men" -author "Simon R Green" -series "Forest Kingdom 3" -theme "blue"
+CreateCover -title "Down|Among|the|Dead Men" -author "SIMON R GREEN" -series "Forest Kingdom 3" -theme "blue" -scaleauthor -scaleseries
 ```
 
 ### Supported options
@@ -62,17 +63,20 @@ Generate a 900x1350 pixel SVG book cover
 
 OPTIONS
 
-  -author          text     * the book author (eg "JRR Tolkien")  
+  -author          text     * the book author (eg "JRR Tolkien")
   -file            text     * where to write the output  [cover.svg]
-  -series          text     * the book series (eg "The Lord of the Rings 1")  
-  -title           text     * the book title (eg "The | Fellowship | of the | Ring")  
+  -series          text     * the book series (eg "The Lord of the Rings 1")
+  -title           text     * the book title (eg "The|Fellowship|of the|Ring")
   -authorfont      text       author font names  [Tahoma,Arial]
-  -authorfontsize  integer    size of author font in pixels  [90]
+  -authorfontsize  integer    size of author font in pixels  [110]
   -seriesfont      text       series font names  [Tahoma,Arial]
-  -seriesfontsize  integer    size of series font in pixels  [90]
+  -seriesfontsize  integer    size of series font in pixels  [100]
   -theme           text       the colour theme  [default]
   -titlefont       text       title font names  [Impact,Tahoma,Arial]
   -titlefontsize   integer    size of title font in pixels  [180]
+  -debug                      show extra debugging info
+  -scaleauthor                scale author name to fit its area
+  -scaleseries                scale series name to fit its area
 
   * means required, values in square brackets are defaults
 
@@ -83,6 +87,12 @@ THEMES
 
 The `title`, `author`, and `series` all support including either a pipe symbol (`|`) or `\n` as a line break.  In the example above of `The \n Hobbit` (which could also be written as `The | Hobbit`) when the title is added to the cover the text will wrap onto a new line where the `\n` or `|` appears (extra spacing around them is ignored).
 In combination with the `titlefontsize` this allows adjusting the size and layout of the title for the best use of the space allocated on the cover image.
+
+The `-scaleauthor` and `-scaleseries` options write the author and/or series using their font size, but scale the text and its spacing evenly to fit the width of that area of the cover.
+Note that the vertical sizing of the text is *not* affected, so you may still need to tweak the original font size if the scaling affects the width of the letters adversely.
+
+The `debug` option writes out to the terminal various aspects of the SVG canvas plus the rectangles and text that comprise the cover.
+This information can be seen in the raw SVG source but it may be clearer on-screen. In addition, the rendered SVG will have bounding boxes drawn around the text areas to help you fine-tune font sizes etc if required. This is shown in one of the examples further down.
 
 ### Exclamation marks
 
@@ -101,6 +111,9 @@ Another option which often works is to use the double quotes but with an *escape
 - Choose 'Capture node screenshot' to save it as a PNG
 
 ## Examples
+
+### Example with `-debug` active
+![debug example](example-debug.png)
 
 ### `-theme=default`
 ![default example](example-default.svg)

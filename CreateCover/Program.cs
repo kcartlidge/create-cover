@@ -28,9 +28,11 @@ class Program
             .SupportsOption<string>("titlefont", "title font names", "Impact,Tahoma,Arial")
             .SupportsOption<int>("titlefontsize", "size of title font in pixels", 180)
             .SupportsOption<string>("authorfont", "author font names", "Tahoma,Arial")
-            .SupportsOption<int>("authorfontsize", "size of author font in pixels", 90)
+            .SupportsOption<int>("authorfontsize", "size of author font in pixels", 110)
             .SupportsOption<string>("seriesfont", "series font names", "Tahoma,Arial")
-            .SupportsOption<int>("seriesfontsize", "size of series font in pixels", 90)
+            .SupportsOption<int>("seriesfontsize", "size of series font in pixels", 100)
+            .SupportsFlag("scaleauthor", "scale author name to fit its area")
+            .SupportsFlag("scaleseries", "scale series name to fit its area")
             .SupportsFlag("debug", "show extra debugging info")
             .AddCustomOptionValidator("file", (string key, object filename) =>
             {
@@ -87,7 +89,9 @@ class Program
             theme,
             parser.GetOption<string>("title").Replace("\\n", "\n").Replace("|", "\n"),
             parser.GetOption<string>("author").Replace("\\n", "\n").Replace("|", "\n"),
-            parser.GetOption<string>("series").Replace("\\n", "\n").Replace("|", "\n"));
+            parser.GetOption<string>("series").Replace("\\n", "\n").Replace("|", "\n"),
+            parser.IsFlagProvided("scaleauthor"),
+            parser.IsFlagProvided("scaleseries"));
 
         // Output.
         var svgFilename = parser.GetOption<string>("file");
