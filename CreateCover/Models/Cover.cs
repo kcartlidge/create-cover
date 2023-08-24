@@ -34,8 +34,8 @@
             this.scaleSeries = scaleSeries;
         }
 
-        /// <summary>Write the SVG to the named file.</summary>
-        public void Write(string filename, bool debugInfo = false)
+        /// <summary>Get the SVG source.</summary>
+        public string GetSVG(bool debugInfo = false)
         {
             // Predefined stuff.
             var padX = 75;
@@ -44,13 +44,13 @@
             var seriesPadY = 10;
 
             // Stripe vertical positioning.
-            var slice = height / 8;
+            var slice = height / 100;
             var titleTop = 0;
-            var titleBase = slice * 6;
-            var authorTop = slice * 6;
-            var authorBase = slice * 7;
-            var seriesTop = slice * 7;
-            var seriesBase = slice * 8;
+            var titleBase = slice * 78;
+            var authorTop = slice * 78;
+            var authorBase = slice * 90;
+            var seriesTop = slice * 95;
+            var seriesBase = slice * 100;
 
             // Create the blocks with their text content.
             var titleBlock = new TextBox(
@@ -73,11 +73,15 @@
             svg.Add(seriesBlock);
 
             // Add the border.
-            svg.Add(new Rectangle(svg.BoundingBox, theme.BorderColor));
+            svg.Add(new Rectangle(svg.BoundingBox, theme.BorderColor, null, 30));
 
-            if (debugInfo) Console.WriteLine();
-            File.WriteAllText(filename, svg.GetSVG(debugInfo));
-            if (debugInfo) Console.WriteLine();
+            return svg.GetSVG(debugInfo);
+        }
+
+        /// <summary>Write the SVG to the named file.</summary>
+        public void Write(string filename, bool debugInfo = false)
+        {
+            File.WriteAllText(filename, GetSVG(debugInfo));
         }
     }
 }

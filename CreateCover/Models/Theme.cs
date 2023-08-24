@@ -57,9 +57,15 @@
         }
 
         /// <summary>Get the collection of known standard schemes.</summary>
-        public static string GetStandardThemeNames()
+        public static List<string> GetStandardThemeNames()
         {
-            return string.Join(", ", StandardThemes().Select(x => x.Key));
+            return StandardThemes().Select(x => x.Key).ToList();
+        }
+
+        /// <summary>Get the collection of known standard schemes.</summary>
+        public static string GetStandardThemeNamesCSV()
+        {
+            return string.Join(", ", GetStandardThemeNames());
         }
 
         /// <summary>Return the named standard scheme.</summary>
@@ -73,12 +79,16 @@
             var themes = new Dictionary<string, Theme>
             {
                 { "default", Defaults() },
-                { "dark", Dark() },
+                { "black", Black() },
                 { "blue", Blue() },
+                { "darkblue", DarkBlue() },
                 { "green", Green() },
+                { "darkgreen", DarkGreen() },
                 { "red", Red() },
-                { "yellow", Yellow() },
+                { "darkred", DarkRed() },
+                { "paleyellow", PaleYellow() },
                 { "orange", Orange() },
+                { "brown", Brown() },
             };
             return themes;
         }
@@ -99,58 +109,53 @@
                 0);
         }
 
-        private static Theme Dark()
+        private static Theme Black()
         {
             var theme = Theme.Defaults();
             theme.BackColor = Color.Black;
             theme.ForeColor = Color.White;
             theme.AuthorBackColor = Color.White;
             theme.AuthorForeColor = Color.Black;
-            theme.BorderColor = Color.Black;
             return theme;
         }
 
         private static Theme Blue()
         {
             var theme = Theme.Defaults();
-            theme.BackColor = new Color("004488");
+            theme.BackColor = new Color("246FB9");
             theme.ForeColor = Color.White;
             theme.AuthorBackColor = theme.ForeColor;
             theme.AuthorForeColor = theme.BackColor;
-            theme.BorderColor = theme.BackColor;
             return theme;
         }
 
         private static Theme Green()
         {
             var theme = Theme.Defaults();
-            theme.BackColor = new Color("008844");
+            theme.BackColor = new Color("009933");
             theme.ForeColor = Color.White;
             theme.AuthorBackColor = theme.ForeColor;
             theme.AuthorForeColor = theme.BackColor;
-            theme.BorderColor = theme.BackColor;
             return theme;
         }
 
         private static Theme Red()
         {
             var theme = Theme.Defaults();
-            theme.BackColor = new Color("884444");
+            theme.BackColor = new Color("E24040");
             theme.ForeColor = Color.White;
             theme.AuthorBackColor = theme.ForeColor;
             theme.AuthorForeColor = theme.BackColor;
-            theme.BorderColor = theme.BackColor;
             return theme;
         }
 
-        private static Theme Yellow()
+        private static Theme PaleYellow()
         {
             var theme = Theme.Defaults();
             theme.BackColor = new Color("DDDD88");
             theme.ForeColor = Color.Black;
             theme.AuthorBackColor = theme.ForeColor;
             theme.AuthorForeColor = Color.White;
-            theme.BorderColor = Color.Black;
             return theme;
         }
 
@@ -161,7 +166,46 @@
             theme.ForeColor = Color.Black;
             theme.AuthorBackColor = theme.ForeColor;
             theme.AuthorForeColor = Color.White;
-            theme.BorderColor = Color.Black;
+            return theme;
+        }
+
+        private static Theme Brown()
+        {
+            var theme = Theme.Defaults();
+            theme.BackColor = new Color("945C22");
+            theme.ForeColor = Color.White;
+            theme.AuthorBackColor = theme.ForeColor;
+            theme.AuthorForeColor = theme.BackColor;
+            return theme;
+        }
+
+        private static Theme DarkBlue()
+        {
+            var theme = Theme.Defaults();
+            theme.BackColor = new Color("1e5183");
+            theme.ForeColor = Color.White;
+            theme.AuthorBackColor = Color.White;
+            theme.AuthorForeColor = Color.Black;
+            return theme;
+        }
+
+        private static Theme DarkGreen()
+        {
+            var theme = Theme.Defaults();
+            theme.BackColor = new Color("5a7b4c");
+            theme.ForeColor = Color.White;
+            theme.AuthorBackColor = Color.White;
+            theme.AuthorForeColor = Color.Black;
+            return theme;
+        }
+
+        private static Theme DarkRed()
+        {
+            var theme = Theme.Defaults();
+            theme.BackColor = new Color("884444");
+            theme.ForeColor = Color.White;
+            theme.AuthorBackColor = theme.ForeColor;
+            theme.AuthorForeColor = theme.BackColor;
             return theme;
         }
     }

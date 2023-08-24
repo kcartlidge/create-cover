@@ -1,6 +1,6 @@
 ﻿# Create Cover
 
-Generate a 900 x 1350 pixel SVG book cover.
+Generate themed 900x1350 pixel book covers (SVG and PNG).
 Supports a small selection of themes using a standard (and auto-arranging) layout.
 
 *(Examples are at the bottom.)*
@@ -43,14 +43,14 @@ Example commands for when running directly from source (with dotnet 7+ installed
 
 ```sh
 cd <project>
-dotnet run -- -title "Down|Among|the|Dead Men" -author "SIMON R GREEN" -series "Forest Kingdom 3" -theme "blue" -scaleauthor -scaleseries
+dotnet run -- -author "SIMON R GREEN" -file "../example-covers.html" -series "Forest Kingdom 3" -title "Down|Among|the|Dead Men" -scaleauthor -scaleseries
 ```
 
 If you've added it to your path it's simpler (no dotnet installation required):
 
 ```sh
 cd <wherever>
-CreateCover -title "Down|Among|the|Dead Men" -author "SIMON R GREEN" -series "Forest Kingdom 3" -theme "blue" -scaleauthor -scaleseries
+CreateCover -author "SIMON R GREEN" -file "../example-covers.html" -series "Forest Kingdom 3" -title "Down|Among|the|Dead Men" -scaleauthor -scaleseries
 ```
 
 ### Supported options
@@ -59,31 +59,29 @@ Running `CreateCover` displays the following:
 
 ```
 CREATE COVER
-Generate a 900x1350 pixel SVG book cover
+Generate themed 900x1350 pixel book covers (SVG and PNG)
 
 OPTIONS
 
-  -author          text     * the book author (eg "JRR Tolkien")
-  -file            text     * where to write the output  [cover.svg]
-  -series          text     * the book series (eg "The Lord of the Rings 1")
-  -title           text     * the book title (eg "The|Fellowship|of the|Ring")
+  -author          text     * the book author (eg "JRR Tolkien")  
+  -file            text     * where to write the output  [covers.html]
+  -series          text     * the book series (eg "The Lord of the Rings 1")  
+  -title           text     * the book title (eg "The | Fellowship | of the | Ring")  
   -authorfont      text       author font names  [Tahoma,Arial]
   -authorfontsize  integer    size of author font in pixels  [110]
   -seriesfont      text       series font names  [Tahoma,Arial]
   -seriesfontsize  integer    size of series font in pixels  [100]
-  -theme           text       the colour theme  [default]
   -titlefont       text       title font names  [Impact,Tahoma,Arial]
   -titlefontsize   integer    size of title font in pixels  [180]
   -debug                      show extra debugging info
   -scaleauthor                scale author name to fit its area
   -scaleseries                scale series name to fit its area
 
-  * means required, values in square brackets are defaults
-
-THEMES
-
-  default, dark, blue, green, red, yellow, orange
+  * is required, values in square brackets are defaults
 ```
+
+The output will be a HTML page (named as per `-file`) with a thumbnail-size scaleable SVG cover for each theme.
+Clicking on any of those covers will reveal a 900x1350 PNG version ready for copying/saving.
 
 The `title`, `author`, and `series` all support including either a pipe symbol (`|`) or `\n` as a line break.  In the example above of `The \n Hobbit` (which could also be written as `The | Hobbit`) when the title is added to the cover the text will wrap onto a new line where the `\n` or `|` appears (extra spacing around them is ignored).
 In combination with the `titlefontsize` this allows adjusting the size and layout of the title for the best use of the space allocated on the cover image.
@@ -91,8 +89,7 @@ In combination with the `titlefontsize` this allows adjusting the size and layou
 The `-scaleauthor` and `-scaleseries` options write the author and/or series using their font size, but scale the text and its spacing evenly to fit the width of that area of the cover.
 Note that the vertical sizing of the text is *not* affected, so you may still need to tweak the original font size if the scaling affects the width of the letters adversely.
 
-The `debug` option writes out to the terminal various aspects of the SVG canvas plus the rectangles and text that comprise the cover.
-This information can be seen in the raw SVG source but it may be clearer on-screen. In addition, the rendered SVG will have bounding boxes drawn around the text areas to help you fine-tune font sizes etc if required. This is shown in one of the examples further down.
+The `debug` option adds bounding boxes drawn around the text areas in the covers (to help you fine-tune font sizes etc if required).
 
 ### Exclamation marks
 
@@ -103,26 +100,10 @@ The reason the examples use double quotes is that otherwise if your title includ
 
 Another option which often works is to use the double quotes but with an *escaped* exclamation mark, for example `"Toro\!"` where the `\` before the `!` stops it being treated as a special character. Not all systems support this; the latest Mac (which runs *zsh*) does.
 
-## To convert to a PNG
-
-- Open the SVG file in a Chromium browser (eg Brave)
-- Right-click on it and choose 'Inspect'
-- In the 'Elements' right-click on the SVG node
-- Choose 'Capture node screenshot' to save it as a PNG
-
 ## Examples
 
-### Example with `-debug` active
-![debug example](example-debug.png)
-
-### `-theme=default`
-![default example](example-default.svg)
-
-### `-theme=blue`
-![blue example](example-blue.svg)
-
-### `-theme=green`
-![green example](example-green.svg)
+![The standard output](./example-default.png)
+![With the `-debug` flag](./example-debug.png)
 
 ## Generating new builds
 
@@ -142,3 +123,10 @@ cd <solution>/CreateCover
 cd <solution>\CreateCover
 build.bat
 ```
+
+### The example outputs
+
+These should be recreated whenever code changes will affect the output.
+You can use the sample commands shown previously.
+
+Right-click the PNG on the covers page and save over the top of the example images in the repo root, then open each in an image editor/previewer and proportionally scale to 200x300.

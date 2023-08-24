@@ -1,4 +1,5 @@
-﻿using ArgsParser;
+﻿using System.Text;
+using ArgsParser;
 using CreateCover.Models;
 
 namespace CreateCover;
@@ -13,18 +14,17 @@ class Program
     {
         Console.WriteLine();
         Console.WriteLine("CREATE COVER");
-        Console.WriteLine("Generate a 900x1350 pixel SVG book cover");
+        Console.WriteLine("Generate themed 900x1350 pixel book covers (SVG and PNG)");
         Console.WriteLine();
 
         // Define and show command arguments.
         Console.WriteLine("OPTIONS");
         Console.WriteLine();
         var parser = new Parser(args)
-            .RequiresOption<string>("file", "where to write the output", "cover.svg")
+            .RequiresOption<string>("file", "where to write the output", "covers.html")
             .RequiresOption<string>("title", "the book title (eg \"The | Fellowship | of the | Ring\")")
             .RequiresOption<string>("author", "the book author (eg \"JRR Tolkien\")")
             .RequiresOption<string>("series", "the book series (eg \"The Lord of the Rings 1\")")
-            .SupportsOption<string>("theme", "the colour theme", "default")
             .SupportsOption<string>("titlefont", "title font names", "Impact,Tahoma,Arial")
             .SupportsOption<int>("titlefontsize", "size of title font in pixels", 180)
             .SupportsOption<string>("authorfont", "author font names", "Tahoma,Arial")
@@ -38,22 +38,11 @@ class Program
             {
                 var errs = new List<string>();
                 var ext = Path.GetExtension($"{filename}").ToLowerInvariant();
-                if (ext != ".svg") errs.Add($"Not an SVG filename: {filename}");
-                return errs;
-            })
-            .AddCustomOptionValidator("theme", (string key, object themename) =>
-            {
-                var errs = new List<string>();
-                if (Theme.IsStandardTheme((string)themename) == false)
-                    errs.Add($"Unknown theme: {themename}");
+                if (ext != ".html") errs.Add($"Not an HTML filename: {filename}");
                 return errs;
             })
         ;
         parser.Help(2);
-        Console.WriteLine("THEMES");
-        Console.WriteLine();
-        Console.WriteLine("  " + Theme.GetStandardThemeNames());
-        Console.WriteLine();
 
         // Load and validate.
         parser.Parse();
@@ -71,39 +60,44 @@ class Program
         Console.WriteLine();
         parser.ShowProvidedArguments(2);
 
-        // Apply the theming.
-        var theme = Theme.GetStandardTheme(parser.GetOption<string>("theme"));
-        theme.TitleFonts = parser.GetOption<string>("titlefont");
-        theme.AuthorFont = parser.GetOption<string>("authorfont");
-        theme.SeriesFont = parser.GetOption<string>("seriesfont");
-        theme.TitleFontSize = parser.GetOption<int>("titlefontsize");
-        theme.AuthorFontSize = parser.GetOption<int>("authorfontsize");
-        theme.SeriesFontSize = parser.GetOption<int>("seriesfontsize");
+        // Determine what theme/themes need generating.
+        var filename = parser.GetOption<string>("file");
+
+        // Iterate through all requested themes (name, filename).
+        var generated = new Dictionary<string, string>();
+        var outputFolder = Path.GetDirectoryName(Path.GetFullPath(filename));
+        var isDebug = parser.IsFlagProvided("debug");
+        Console.WriteLine();
 
         // Generate.
-        Console.WriteLine();
-        Console.WriteLine("Generating SVG cover.");
-        var cover = new Cover(
-            900,
-            1350,
-            theme,
-            parser.GetOption<string>("title").Replace("\\n", "\n").Replace("|", "\n"),
-            parser.GetOption<string>("author").Replace("\\n", "\n").Replace("|", "\n"),
-            parser.GetOption<string>("series").Replace("\\n", "\n").Replace("|", "\n"),
-            parser.IsFlagProvided("scaleauthor"),
-            parser.IsFlagProvided("scaleseries"));
+        foreach (var sheetThemeName in Theme.GetStandardThemeNames())
+        {
+            var theme = Theme.GetStandardTheme(sheetThemeName);
+            theme.TitleFonts = parser.GetOption<string>("titlefont");
+            theme.AuthorFont = parser.GetOption<string>("authorfont");
+            theme.SeriesFont = parser.GetOption<string>("seriesfont");
+            theme.TitleFontSize = parser.GetOption<int>("titlefontsize");
+            theme.AuthorFontSize = parser.GetOption<int>("authorfontsize");
+            theme.SeriesFontSize = parser.GetOption<int>("seriesfontsize");
 
-        // Output.
-        var svgFilename = parser.GetOption<string>("file");
-        cover.Write(svgFilename, parser.IsFlagProvided("debug"));
+            var cover = new Cover(
+                900,
+                1350,
+                theme,
+                parser.GetOption<string>("title").Replace("\\n", "\n").Replace("|", "\n"),
+                parser.GetOption<string>("author").Replace("\\n", "\n").Replace("|", "\n"),
+                parser.GetOption<string>("series").Replace("\\n", "\n").Replace("|", "\n"),
+                parser.IsFlagProvided("scaleauthor"),
+                parser.IsFlagProvided("scaleseries"));
+            generated.Add(sheetThemeName, cover.GetSVG(isDebug));
+        }
+
+        // Output the index sheet page with all the covers.
+        IndexSheet.Write(filename, parser, generated);
 
         // Confirm.
-        Console.WriteLine($"Written SVG to {Path.GetFullPath(svgFilename)}");
         Console.WriteLine();
-        Console.WriteLine("Open the SVG file in a Chromium browser (eg Brave),");
-        Console.WriteLine("right-click on it and choose 'Inspect'. In the");
-        Console.WriteLine("'Elements' right-click on the SVG node and choose");
-        Console.WriteLine("'Capture node screenshot' to save it as a PNG.");
+        Console.WriteLine("Done.");
         Console.WriteLine();
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace CreateCover.Models
+﻿using System.Text.Encodings.Web;
+
+namespace CreateCover.Models
 {
     /// <summary>Encapsulates a block of text.</summary>
     public class Text : ISVGElement
@@ -37,7 +39,7 @@
             IsBold = isBold;
             ForeColor = foreColor;
             Scalable = scalable;
-            Content = content.Trim();
+            Content = HtmlEncoder.Default.Encode(content.Trim());
 
             // Calculate the X position based on the anchor point.
             if (Anchor == Anchor.Left)
@@ -49,20 +51,19 @@
 
             // Vertically centre within the bounding box.
             var offset = (boundingBox.Height / 2) - (fontSize / 2);
-            TextY = boundingBox.Y2 - offset;
+            TextY = boundingBox.Y2 - offset + 1;
+            TextY = (BoundingBox.MiddleY * 1005) / 1000;
         }
 
         /// <summary>Get the SVG source.</summary>
         public string GetSVG(bool debugInfo)
         {
-            if (debugInfo) Console.WriteLine(this);
-
             var anch = this.Anchor.ToString().ToLower();
             var bold = IsBold ? " font-weight=\"bold\"" : "";
             var txtLen = Scalable ? $" textLength=\"{BoundingBox.Width}\"" : "";
             var baseLine = " alignment-baseline=\"central\"";
             var adjust = Scalable ? " lengthAdjust=\"spacingAndGlyphs\"" : "";
-            var y = BoundingBox.MiddleY;
+            var y = TextY;
 
             var svg = "";
             if (debugInfo)

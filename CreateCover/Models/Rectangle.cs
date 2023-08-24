@@ -39,8 +39,6 @@
         /// <summary>Get the SVG source.</summary>
         public string GetSVG(bool debugInfo)
         {
-            if (debugInfo) Console.WriteLine(this);
-
             var fill = Filled ? $"{FillColor}" : "none";
             return $"<rect fill=\"{fill}\" stroke=\"{BorderColor}\" stroke-width=\"{StrokeWidth}\" x=\"{X1}\" y=\"{Y1}\" width=\"{Width}\" height=\"{Height}\"></rect>";
         }
