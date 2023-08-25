@@ -25,8 +25,11 @@ class Program
             .RequiresOption<string>("title", "the book title (eg \"The | Fellowship | of the | Ring\")")
             .RequiresOption<string>("author", "the book author (eg \"JRR Tolkien\")")
             .RequiresOption<string>("series", "the book series (eg \"The Lord of the Rings 1\")")
+            .SupportsOption<string>("subtitle", "the book subtitle (eg titles in a box set)")
             .SupportsOption<string>("titlefont", "title font names", "Impact,Tahoma,Arial")
             .SupportsOption<int>("titlefontsize", "size of title font in pixels", 180)
+            .SupportsOption<string>("subtitlefont", "subtitle font names", "Tahoma,Arial")
+            .SupportsOption<int>("subtitlefontsize", "size of subtitle font in pixels", 75)
             .SupportsOption<string>("authorfont", "author font names", "Tahoma,Arial")
             .SupportsOption<int>("authorfontsize", "size of author font in pixels", 110)
             .SupportsOption<string>("seriesfont", "series font names", "Tahoma,Arial")
@@ -74,17 +77,22 @@ class Program
         {
             var theme = Theme.GetStandardTheme(sheetThemeName);
             theme.TitleFonts = parser.GetOption<string>("titlefont");
-            theme.AuthorFont = parser.GetOption<string>("authorfont");
-            theme.SeriesFont = parser.GetOption<string>("seriesfont");
+            theme.SubtitleFonts = parser.GetOption<string>("subtitlefont");
+            theme.AuthorFonts = parser.GetOption<string>("authorfont");
+            theme.SeriesFonts = parser.GetOption<string>("seriesfont");
             theme.TitleFontSize = parser.GetOption<int>("titlefontsize");
+            theme.SubtitleFontSize = parser.GetOption<int>("subtitlefontsize");
             theme.AuthorFontSize = parser.GetOption<int>("authorfontsize");
             theme.SeriesFontSize = parser.GetOption<int>("seriesfontsize");
 
+            var subtitle = parser.IsOptionProvided("subtitle")
+                ? parser.GetOption<string>("subtitle") : "";
             var cover = new Cover(
                 900,
                 1350,
                 theme,
                 parser.GetOption<string>("title").Replace("\\n", "\n").Replace("|", "\n"),
+                subtitle.Replace("\\n", "\n").Replace("|", "\n"),
                 parser.GetOption<string>("author").Replace("\\n", "\n").Replace("|", "\n"),
                 parser.GetOption<string>("series").Replace("\\n", "\n").Replace("|", "\n"),
                 parser.IsFlagProvided("scaleauthor"),

@@ -27,7 +27,7 @@ namespace CreateCover
             html.AppendLine("    h1{font-size:2rem;letter-spacing:-1px;}");
             html.AppendLine("    div{display:inline-block;margin:1rem 1rem 1rem 1rem;}");
             html.AppendLine("    div.large{padding-top:2rem;}");
-            html.AppendLine("    h2{font-size:1.25rem;font-weight:normal;margin:0;text-align:center;}");
+            html.AppendLine("    h2{font-size:1rem;font-weight:normal;margin:0;text-align:center;}");
             html.AppendLine("    canvas{background:#fff;display:block;margin:0 0 4rem 0;}");
             html.AppendLine("    canvas{background-image: linear-gradient(-45deg, #eee 25%, transparent 25%, transparent 50%, #eee 50%, #eee 75%, transparent 75%, transparent);background-size:48px 48px;}");
             html.AppendLine("    svg{display:block;box-shadow:0 0 1rem rgba(0,0,0,0.5);}");

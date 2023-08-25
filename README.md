@@ -43,14 +43,16 @@ Example commands for when running directly from source (with dotnet 7+ installed
 
 ```sh
 cd <project>
-dotnet run -- -author "SIMON R GREEN" -file "../example-covers.html" -series "Forest Kingdom 3" -title "Down|Among|the|Dead Men" -scaleauthor -scaleseries
+dotnet run -- -author "SIMON R GREEN" -file "../example-covers.html" -series "Hawk & Fisher 1-3" -subtitle "Hawk and Fisher|Winner Takes All|The God Killer" -title "Swords|of|Haven" -scaleauthor -scaleseries
+dotnet run -- -author "SIMON R GREEN" -file "../example-covers.html" -series "Hawk & Fisher 4-6" -subtitle "Wolf in the Fold|Guard Against Dishonor|The Bones of Haven" -title "Guards|of|Haven" -scaleauthor -scaleseries
 ```
 
 If you've added it to your path it's simpler (no dotnet installation required):
 
 ```sh
 cd <wherever>
-CreateCover -author "SIMON R GREEN" -file "../example-covers.html" -series "Forest Kingdom 3" -title "Down|Among|the|Dead Men" -scaleauthor -scaleseries
+CreateCover -author "SIMON R GREEN" -file "../example-covers.html" -series "Hawk & Fisher 1-3" -subtitle "Hawk and Fisher|Winner Takes All|The God Killer" -title "Swords|of|Haven" -scaleauthor -scaleseries
+CreateCover -author "SIMON R GREEN" -file "../example-covers.html" -series "Hawk & Fisher 4-6" -subtitle "Wolf in the Fold|Guard Against Dishonor|The Bones of Haven" -title "Guards|of|Haven" -scaleauthor -scaleseries
 ```
 
 ### Supported options
@@ -63,19 +65,22 @@ Generate themed 900x1350 pixel book covers (SVG and PNG)
 
 OPTIONS
 
-  -author          text     * the book author (eg "JRR Tolkien")  
-  -file            text     * where to write the output  [covers.html]
-  -series          text     * the book series (eg "The Lord of the Rings 1")  
-  -title           text     * the book title (eg "The | Fellowship | of the | Ring")  
-  -authorfont      text       author font names  [Tahoma,Arial]
-  -authorfontsize  integer    size of author font in pixels  [110]
-  -seriesfont      text       series font names  [Tahoma,Arial]
-  -seriesfontsize  integer    size of series font in pixels  [100]
-  -titlefont       text       title font names  [Impact,Tahoma,Arial]
-  -titlefontsize   integer    size of title font in pixels  [180]
-  -debug                      show extra debugging info
-  -scaleauthor                scale author name to fit its area
-  -scaleseries                scale series name to fit its area
+  -author            text     * the book author (eg "JRR Tolkien")
+  -file              text     * where to write the output  [covers.html]
+  -series            text     * the book series (eg "The Lord of the Rings 1")
+  -title             text     * the book title (eg "The | Fellowship | of the | Ring")
+  -authorfont        text       author font names  [Tahoma,Arial]
+  -authorfontsize    integer    size of author font in pixels  [110]
+  -seriesfont        text       series font names  [Tahoma,Arial]
+  -seriesfontsize    integer    size of series font in pixels  [100]
+  -subtitle          text       the book subtitle (eg titles in a box set)
+  -subtitlefont      text       subtitle font names  [Tahoma,Arial]
+  -subtitlefontsize  integer    size of subtitle font in pixels  [75]
+  -titlefont         text       title font names  [Impact,Tahoma,Arial]
+  -titlefontsize     integer    size of title font in pixels  [180]
+  -debug                        show extra debugging info
+  -scaleauthor                  scale author name to fit its area
+  -scaleseries                  scale series name to fit its area
 
   * is required, values in square brackets are defaults
 ```
@@ -88,6 +93,10 @@ In combination with the `titlefontsize` this allows adjusting the size and layou
 
 The `-scaleauthor` and `-scaleseries` options write the author and/or series using their font size, but scale the text and its spacing evenly to fit the width of that area of the cover.
 Note that the vertical sizing of the text is *not* affected, so you may still need to tweak the original font size if the scaling affects the width of the letters adversely.
+
+The *subtitle* options relate to smaller text that can appear below the title.
+Usually this is not necessary but it could be used for example in cases like *The Hobbit* where the subtitle could be *There and Back Again*.
+It might also be used to list individual book names where the title is for an omnibus edition or collection. Realistically, three at the most due to space constraints.
 
 The `debug` option adds bounding boxes drawn around the text areas in the covers (to help you fine-tune font sizes etc if required).
 

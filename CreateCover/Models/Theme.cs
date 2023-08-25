@@ -8,15 +8,18 @@
     {
         public Color BackColor = Color.White;
         public Color ForeColor = Color.Black;
+        public Color TitleForeColor = Color.Black;
         public Color AuthorBackColor = Color.White;
         public Color AuthorForeColor = Color.Black;
         public Color BorderColor = Color.Black;
 
         public string TitleFonts = "";
-        public string AuthorFont = "";
-        public string SeriesFont = "";
+        public string SubtitleFonts = "";
+        public string AuthorFonts = "";
+        public string SeriesFonts = "";
 
         public int TitleFontSize;
+        public int SubtitleFontSize;
         public int AuthorFontSize;
         public int SeriesFontSize;
 
@@ -24,27 +27,33 @@
         public static Theme Create(
             Color backColor,
             Color foreColor,
+            Color titleForeColor,
             Color authorBackColor,
             Color authorForeColor,
             Color borderColor,
             string titleFonts,
-            string authorFont,
-            string seriesFont,
-            int titleFontSize,
-            int authorFontSize,
-            int seriesFontSize)
+            string subtitleFonts,
+            string authorFonts,
+            string seriesFonts,
+            int titleFontSize = 0,
+            int subtitleFontSize = 0,
+            int authorFontSize = 0,
+            int seriesFontSize = 0)
         {
             return new Theme
             {
                 BackColor = backColor,
                 ForeColor = foreColor,
+                TitleForeColor = titleForeColor,
                 AuthorBackColor = authorBackColor,
                 AuthorForeColor = authorForeColor,
                 BorderColor = borderColor,
                 TitleFonts = titleFonts,
-                AuthorFont = authorFont,
-                SeriesFont = seriesFont,
+                SubtitleFonts = subtitleFonts,
+                AuthorFonts = authorFonts,
+                SeriesFonts = seriesFonts,
                 TitleFontSize = titleFontSize,
+                SubtitleFontSize = subtitleFontSize,
                 AuthorFontSize = authorFontSize,
                 SeriesFontSize = seriesFontSize,
             };
@@ -76,137 +85,227 @@
 
         private static Dictionary<string, Theme> StandardThemes()
         {
-            var themes = new Dictionary<string, Theme>
+            return new Dictionary<string, Theme>()
             {
-                { "default", Defaults() },
-                { "black", Black() },
-                { "blue", Blue() },
-                { "darkblue", DarkBlue() },
-                { "green", Green() },
-                { "darkgreen", DarkGreen() },
-                { "red", Red() },
-                { "darkred", DarkRed() },
-                { "paleyellow", PaleYellow() },
-                { "orange", Orange() },
-                { "brown", Brown() },
+                { Default().Name, Default().Settings },
+                { DefaultBlue().Name, DefaultBlue().Settings },
+                { DefaultDarkBlue().Name, DefaultDarkBlue().Settings },
+                { DefaultGreen().Name, DefaultGreen().Settings },
+                { DefaultDarkGreen().Name, DefaultDarkGreen().Settings },
+                { DefaultRed().Name, DefaultRed().Settings },
+                { DefaultDarkRed().Name, DefaultDarkRed().Settings },
+                { DefaultBrown().Name, DefaultBrown().Settings },
+
+                { OffYellow().Name, OffYellow().Settings },
+                { Orange().Name, Orange().Settings },
+                { Brown().Name, Brown().Settings },
+
+                { Black().Name, Black().Settings },
+                { Blue().Name, Blue().Settings },
+                { DarkBlue().Name, DarkBlue().Settings },
+                { Green().Name, Green().Settings },
+                { DarkGreen().Name, DarkGreen().Settings },
+                { Red().Name, Red().Settings },
+                { DarkRed().Name, DarkRed().Settings },
             };
-            return themes;
         }
 
-        private static Theme Defaults()
+        private static (string Name, Theme Settings) Default()
         {
-            return Theme.Create(
-                Color.White,
+            return ("default", Create(
+                Color.White, Color.Black,
                 Color.Black,
+                Color.Black, Color.White,
                 Color.Black,
-                Color.White,
-                Color.Black,
-                "Impact,Tahoma,Arial",
-                "Tahoma,Arial",
-                "Tahoma,Arial",
-                0,
-                0,
-                0);
+                "Impact,Tahoma,Arial", "Tahoma,Arial",
+                "Tahoma,Arial", "Tahoma,Arial"));
         }
 
-        private static Theme Black()
+        private static (string Name, Theme Settings) Black()
         {
-            var theme = Theme.Defaults();
+            var (_, theme) = Default();
             theme.BackColor = Color.Black;
             theme.ForeColor = Color.White;
+            theme.TitleForeColor = theme.ForeColor;
             theme.AuthorBackColor = Color.White;
             theme.AuthorForeColor = Color.Black;
-            return theme;
+            return ("black", theme);
         }
 
-        private static Theme Blue()
+        private static (string Name, Theme Settings) DefaultBlue()
         {
-            var theme = Theme.Defaults();
+            var (_, theme) = Default();
+            theme.BackColor = Color.White;
+            theme.ForeColor = Color.Black;
+            theme.TitleForeColor = new Color("246FB9");
+            theme.AuthorBackColor = theme.TitleForeColor;
+            theme.AuthorForeColor = theme.BackColor;
+            return ("default-blue", theme);
+        }
+
+        private static (string Name, Theme Settings) DefaultDarkBlue()
+        {
+            var (_, theme) = Default();
+            theme.BackColor = Color.White;
+            theme.ForeColor = Color.Black;
+            theme.TitleForeColor = new Color("1e5183");
+            theme.AuthorBackColor = theme.TitleForeColor;
+            theme.AuthorForeColor = theme.BackColor;
+            return ("default-dark-blue", theme);
+        }
+
+        private static (string Name, Theme Settings) Blue()
+        {
+            var (_, theme) = Default();
             theme.BackColor = new Color("246FB9");
             theme.ForeColor = Color.White;
+            theme.TitleForeColor = theme.ForeColor;
             theme.AuthorBackColor = theme.ForeColor;
             theme.AuthorForeColor = theme.BackColor;
-            return theme;
+            return ("blue", theme);
         }
 
-        private static Theme Green()
+        private static (string Name, Theme Settings) DarkBlue()
         {
-            var theme = Theme.Defaults();
-            theme.BackColor = new Color("009933");
-            theme.ForeColor = Color.White;
-            theme.AuthorBackColor = theme.ForeColor;
-            theme.AuthorForeColor = theme.BackColor;
-            return theme;
-        }
-
-        private static Theme Red()
-        {
-            var theme = Theme.Defaults();
-            theme.BackColor = new Color("E24040");
-            theme.ForeColor = Color.White;
-            theme.AuthorBackColor = theme.ForeColor;
-            theme.AuthorForeColor = theme.BackColor;
-            return theme;
-        }
-
-        private static Theme PaleYellow()
-        {
-            var theme = Theme.Defaults();
-            theme.BackColor = new Color("DDDD88");
-            theme.ForeColor = Color.Black;
-            theme.AuthorBackColor = theme.ForeColor;
-            theme.AuthorForeColor = Color.White;
-            return theme;
-        }
-
-        private static Theme Orange()
-        {
-            var theme = Theme.Defaults();
-            theme.BackColor = new Color("FFAA55");
-            theme.ForeColor = Color.Black;
-            theme.AuthorBackColor = theme.ForeColor;
-            theme.AuthorForeColor = Color.White;
-            return theme;
-        }
-
-        private static Theme Brown()
-        {
-            var theme = Theme.Defaults();
-            theme.BackColor = new Color("945C22");
-            theme.ForeColor = Color.White;
-            theme.AuthorBackColor = theme.ForeColor;
-            theme.AuthorForeColor = theme.BackColor;
-            return theme;
-        }
-
-        private static Theme DarkBlue()
-        {
-            var theme = Theme.Defaults();
+            var (_, theme) = Default();
             theme.BackColor = new Color("1e5183");
             theme.ForeColor = Color.White;
+            theme.TitleForeColor = theme.ForeColor;
             theme.AuthorBackColor = Color.White;
             theme.AuthorForeColor = Color.Black;
-            return theme;
+            return ("dark-blue", theme);
         }
 
-        private static Theme DarkGreen()
+        private static (string Name, Theme Settings) DefaultGreen()
         {
-            var theme = Theme.Defaults();
-            theme.BackColor = new Color("5a7b4c");
-            theme.ForeColor = Color.White;
-            theme.AuthorBackColor = Color.White;
-            theme.AuthorForeColor = Color.Black;
-            return theme;
+            var (_, theme) = Default();
+            theme.BackColor = Color.White;
+            theme.ForeColor = Color.Black;
+            theme.TitleForeColor = new Color("009933");
+            theme.AuthorBackColor = theme.TitleForeColor;
+            theme.AuthorForeColor = theme.BackColor;
+            return ("default-green", theme);
         }
 
-        private static Theme DarkRed()
+        private static (string Name, Theme Settings) DefaultDarkGreen()
         {
-            var theme = Theme.Defaults();
-            theme.BackColor = new Color("884444");
+            var (_, theme) = Default();
+            theme.BackColor = Color.White;
+            theme.ForeColor = Color.Black;
+            theme.TitleForeColor = new Color("5a7b4c");
+            theme.AuthorBackColor = theme.TitleForeColor;
+            theme.AuthorForeColor = theme.BackColor;
+            return ("default-dark-green", theme);
+        }
+
+        private static (string Name, Theme Settings) Green()
+        {
+            var (_, theme) = Default();
+            theme.BackColor = new Color("009933");
             theme.ForeColor = Color.White;
+            theme.TitleForeColor = theme.ForeColor;
             theme.AuthorBackColor = theme.ForeColor;
             theme.AuthorForeColor = theme.BackColor;
-            return theme;
+            return ("green", theme);
+        }
+
+        private static (string Name, Theme Settings) DarkGreen()
+        {
+            var (_, theme) = Default();
+            theme.BackColor = new Color("5a7b4c");
+            theme.ForeColor = Color.White;
+            theme.TitleForeColor = theme.ForeColor;
+            theme.AuthorBackColor = Color.White;
+            theme.AuthorForeColor = Color.Black;
+            return ("dark-green", theme);
+        }
+
+        private static (string Name, Theme Settings) DefaultRed()
+        {
+            var (_, theme) = Default();
+            theme.BackColor = Color.White;
+            theme.ForeColor = Color.Black;
+            theme.TitleForeColor = new Color("E24040");
+            theme.AuthorBackColor = theme.TitleForeColor;
+            theme.AuthorForeColor = theme.BackColor;
+            return ("default-red", theme);
+        }
+
+        private static (string Name, Theme Settings) DefaultDarkRed()
+        {
+            var (_, theme) = Default();
+            theme.BackColor = Color.White;
+            theme.ForeColor = Color.Black;
+            theme.TitleForeColor = new Color("884444");
+            theme.AuthorBackColor = theme.TitleForeColor;
+            theme.AuthorForeColor = theme.BackColor;
+            return ("default-dark-red", theme);
+        }
+
+        private static (string Name, Theme Settings) Red()
+        {
+            var (_, theme) = Default();
+            theme.BackColor = new Color("E24040");
+            theme.ForeColor = Color.White;
+            theme.TitleForeColor = theme.ForeColor;
+            theme.AuthorBackColor = theme.ForeColor;
+            theme.AuthorForeColor = theme.BackColor;
+            return ("red", theme);
+        }
+
+        private static (string Name, Theme Settings) DarkRed()
+        {
+            var (_, theme) = Default();
+            theme.BackColor = new Color("884444");
+            theme.ForeColor = Color.White;
+            theme.TitleForeColor = theme.ForeColor;
+            theme.AuthorBackColor = theme.ForeColor;
+            theme.AuthorForeColor = theme.BackColor;
+            return ("dark-red", theme);
+        }
+
+        private static (string Name, Theme Settings) OffYellow()
+        {
+            var (_, theme) = Default();
+            theme.BackColor = new Color("DDDD88");
+            theme.ForeColor = Color.Black;
+            theme.TitleForeColor = theme.ForeColor;
+            theme.AuthorBackColor = theme.ForeColor;
+            theme.AuthorForeColor = Color.White;
+            return ("off-yellow", theme);
+        }
+
+        private static (string Name, Theme Settings) Orange()
+        {
+            var (_, theme) = Default();
+            theme.BackColor = new Color("FFAA55");
+            theme.ForeColor = Color.Black;
+            theme.TitleForeColor = theme.ForeColor;
+            theme.AuthorBackColor = theme.ForeColor;
+            theme.AuthorForeColor = Color.White;
+            return ("orange", theme);
+        }
+
+        private static (string Name, Theme Settings) Brown()
+        {
+            var (_, theme) = Default();
+            theme.BackColor = new Color("945C22");
+            theme.ForeColor = Color.White;
+            theme.TitleForeColor = theme.ForeColor;
+            theme.AuthorBackColor = theme.ForeColor;
+            theme.AuthorForeColor = theme.BackColor;
+            return ("brown", theme);
+        }
+
+        private static (string Name, Theme Settings) DefaultBrown()
+        {
+            var (_, theme) = Default();
+            theme.BackColor = Color.White;
+            theme.ForeColor = Color.Black;
+            theme.TitleForeColor = new Color("945C22");
+            theme.AuthorBackColor = theme.TitleForeColor;
+            theme.AuthorForeColor = theme.BackColor;
+            return ("default-brown", theme);
         }
     }
 }
