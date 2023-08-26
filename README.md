@@ -61,26 +61,22 @@ Running `CreateCover` displays the following:
 
 ```
 CREATE COVER
-Generate themed 900x1350 pixel book covers (SVG and PNG)
+Generate themed 900x1350 pixel PNG and SVG book covers
 
 OPTIONS
 
-  -author            text     * the book author (eg "JRR Tolkien")
-  -file              text     * where to write the output  [covers.html]
-  -series            text     * the book series (eg "The Lord of the Rings 1")
-  -title             text     * the book title (eg "The | Fellowship | of the | Ring")
-  -authorfont        text       author font names  [Tahoma,Arial]
-  -authorfontsize    integer    size of author font in pixels  [110]
-  -seriesfont        text       series font names  [Tahoma,Arial]
-  -seriesfontsize    integer    size of series font in pixels  [100]
-  -subtitle          text       the book subtitle (eg titles in a box set)
-  -subtitlefont      text       subtitle font names  [Tahoma,Arial]
-  -subtitlefontsize  integer    size of subtitle font in pixels  [75]
-  -titlefont         text       title font names  [Impact,Tahoma,Arial]
-  -titlefontsize     integer    size of title font in pixels  [180]
-  -debug                        show extra debugging info
-  -scaleauthor                  scale author name to fit its area
-  -scaleseries                  scale series name to fit its area
+  -author        text  * the book author (eg "JRR Tolkien")  
+  -file          text  * where to write the output  [covers.html]
+  -series        text  * the book series (eg "The Lord of the Rings 1")  
+  -title         text  * the book title (eg "The | Fellowship | of the | Ring")  
+  -authorfont    text    author font,pixels  [Tahoma,110]
+  -seriesfont    text    series font,pixels  [Tahoma,100]
+  -subtitle      text    the book subtitle (eg titles in a box set)  
+  -subtitlefont  text    subtitle font,pixels  [Tahoma,75]
+  -titlefont     text    title font name,pixels  [Impact,180]
+  -debug                 show extra debugging info
+  -scaleauthor           scale author name to fit its area
+  -scaleseries           scale series name to fit its area
 
   * is required, values in square brackets are defaults
 ```
@@ -88,7 +84,7 @@ OPTIONS
 The output will be a HTML page (named as per `-file`) with a thumbnail-size scaleable SVG cover for each theme.
 Clicking on any of those covers will reveal a 900x1350 PNG version ready for copying/saving.
 
-The `title`, `author`, and `series` all support including either a pipe symbol (`|`) or `\n` as a line break.  In the example above of `The \n Hobbit` (which could also be written as `The | Hobbit`) when the title is added to the cover the text will wrap onto a new line where the `\n` or `|` appears (extra spacing around them is ignored).
+The `title`, `author`, and `series` all support including either a pipe symbol (`|`) or `\n` as a line break.  In the example above of `The | Fellowship | of the | Ring` (which could also be written as `The \n Fellowship \n of the \n Ring`) when the title is added to the cover the text will wrap onto a new line where the `\n` or `|` appears (extra spacing around them is ignored).
 In combination with the `titlefontsize` this allows adjusting the size and layout of the title for the best use of the space allocated on the cover image.
 
 The `-scaleauthor` and `-scaleseries` options write the author and/or series using their font size, but scale the text and its spacing evenly to fit the width of that area of the cover.

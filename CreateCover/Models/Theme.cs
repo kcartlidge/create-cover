@@ -13,15 +13,10 @@
         public Color AuthorForeColor = Color.Black;
         public Color BorderColor = Color.Black;
 
-        public string TitleFonts = "";
-        public string SubtitleFonts = "";
-        public string AuthorFonts = "";
-        public string SeriesFonts = "";
-
-        public int TitleFontSize;
-        public int SubtitleFontSize;
-        public int AuthorFontSize;
-        public int SeriesFontSize;
+        public Font TitleFont = new Font("", 0);
+        public Font SubtitleFont = new Font("", 0);
+        public Font AuthorFont = new Font("", 0);
+        public Font SeriesFont = new Font("", 0);
 
         /// <summary>Start a new scheme.</summary>
         public static Theme Create(
@@ -31,14 +26,10 @@
             Color authorBackColor,
             Color authorForeColor,
             Color borderColor,
-            string titleFonts,
-            string subtitleFonts,
-            string authorFonts,
-            string seriesFonts,
-            int titleFontSize = 0,
-            int subtitleFontSize = 0,
-            int authorFontSize = 0,
-            int seriesFontSize = 0)
+            Font titleFont,
+            Font subtitleFont,
+            Font authorFont,
+            Font seriesFont)
         {
             return new Theme
             {
@@ -48,14 +39,10 @@
                 AuthorBackColor = authorBackColor,
                 AuthorForeColor = authorForeColor,
                 BorderColor = borderColor,
-                TitleFonts = titleFonts,
-                SubtitleFonts = subtitleFonts,
-                AuthorFonts = authorFonts,
-                SeriesFonts = seriesFonts,
-                TitleFontSize = titleFontSize,
-                SubtitleFontSize = subtitleFontSize,
-                AuthorFontSize = authorFontSize,
-                SeriesFontSize = seriesFontSize,
+                TitleFont = titleFont,
+                SubtitleFont = subtitleFont,
+                AuthorFont = authorFont,
+                SeriesFont = seriesFont,
             };
         }
 
@@ -85,29 +72,20 @@
 
         private static Dictionary<string, Theme> StandardThemes()
         {
-            return new Dictionary<string, Theme>()
-            {
-                { Default().Name, Default().Settings },
-                { DefaultBlue().Name, DefaultBlue().Settings },
-                { DefaultDarkBlue().Name, DefaultDarkBlue().Settings },
-                { DefaultGreen().Name, DefaultGreen().Settings },
-                { DefaultDarkGreen().Name, DefaultDarkGreen().Settings },
-                { DefaultRed().Name, DefaultRed().Settings },
-                { DefaultDarkRed().Name, DefaultDarkRed().Settings },
-                { DefaultBrown().Name, DefaultBrown().Settings },
-
-                { OffYellow().Name, OffYellow().Settings },
-                { Orange().Name, Orange().Settings },
-                { Brown().Name, Brown().Settings },
-
-                { Black().Name, Black().Settings },
-                { Blue().Name, Blue().Settings },
-                { DarkBlue().Name, DarkBlue().Settings },
-                { Green().Name, Green().Settings },
-                { DarkGreen().Name, DarkGreen().Settings },
-                { Red().Name, Red().Settings },
-                { DarkRed().Name, DarkRed().Settings },
-            };
+            var themes = new Dictionary<string, Theme>();
+            foreach (var theme in new[] {
+                Default,
+                DefaultBlue, DefaultDarkBlue,
+                DefaultGreen, DefaultDarkGreen,
+                DefaultRed, DefaultDarkRed,
+                DefaultBrown,
+                OffYellow, Orange, Brown, Black,
+                Blue, DarkBlue,
+                Green, DarkGreen,
+                Red, DarkRed,
+            })
+                themes.Add(theme().Name, theme().Settings);
+            return themes;
         }
 
         private static (string Name, Theme Settings) Default()
@@ -117,8 +95,11 @@
                 Color.Black,
                 Color.Black, Color.White,
                 Color.Black,
-                "Impact,Tahoma,Arial", "Tahoma,Arial",
-                "Tahoma,Arial", "Tahoma,Arial"));
+                new Font("Impact", 180),
+                new Font("Tahoma", 75),
+                new Font("Tahoma", 110),
+                new Font("Tahoma", 100)
+                ));
         }
 
         private static (string Name, Theme Settings) Black()

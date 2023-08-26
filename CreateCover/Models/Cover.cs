@@ -68,21 +68,21 @@
             TextBox? subtitleBlock = null;
             var titleBlock = new TextBox(
                 0, titleTop, width - 1, titleBase, padX, titlePadY, titleText,
-                theme.TitleFonts, theme.TitleFontSize, true, theme.BackColor, theme.TitleForeColor);
+                theme.TitleFont.Name, theme.TitleFont.Pixels, true, theme.BackColor, theme.TitleForeColor);
             if (string.IsNullOrWhiteSpace(subtitleText) == false)
             {
                 subtitleBlock = new TextBox(
                     0, subtitleTop, width - 1, subtitleBase, padX, subtitlePadY, subtitleText,
-                    theme.SubtitleFonts, theme.SubtitleFontSize, false, theme.BackColor,
+                    theme.SubtitleFont.Name, theme.SubtitleFont.Pixels, false, theme.BackColor,
                     theme.ForeColor, false);
             }
             var authorBlock = new TextBox(
                 0, authorTop, width - 1, authorBase, padX, authorPadY, authorText,
-                theme.AuthorFonts, theme.AuthorFontSize, false, theme.AuthorBackColor,
+                theme.AuthorFont.Name, theme.AuthorFont.Pixels, false, theme.AuthorBackColor,
                 theme.AuthorForeColor, scaleAuthor);
             var seriesBlock = new TextBox(
                 0, seriesTop, width - 1, seriesBase, padX, seriesPadY, seriesText,
-                theme.SeriesFonts, theme.SeriesFontSize, false, theme.BackColor,
+                theme.SeriesFont.Name, theme.SeriesFont.Pixels, false, theme.BackColor,
                 theme.ForeColor, scaleSeries);
 
             // Start the SVG and add the sections.

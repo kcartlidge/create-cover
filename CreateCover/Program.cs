@@ -1,5 +1,4 @@
-﻿using System.Text;
-using ArgsParser;
+﻿using ArgsParser;
 using CreateCover.Models;
 
 namespace CreateCover;
@@ -14,26 +13,23 @@ class Program
     {
         Console.WriteLine();
         Console.WriteLine("CREATE COVER");
-        Console.WriteLine("Generate themed 900x1350 pixel book covers (SVG and PNG)");
+        Console.WriteLine("Generate themed 900x1350 pixel PNG and SVG book covers");
         Console.WriteLine();
 
         // Define and show command arguments.
         Console.WriteLine("OPTIONS");
         Console.WriteLine();
+        var defaultTheme = Theme.GetStandardTheme("default");
         var parser = new Parser(args)
             .RequiresOption<string>("file", "where to write the output", "covers.html")
             .RequiresOption<string>("title", "the book title (eg \"The | Fellowship | of the | Ring\")")
+            .SupportsOption<string>("subtitle", "the book subtitle (eg titles in a box set)")
             .RequiresOption<string>("author", "the book author (eg \"JRR Tolkien\")")
             .RequiresOption<string>("series", "the book series (eg \"The Lord of the Rings 1\")")
-            .SupportsOption<string>("subtitle", "the book subtitle (eg titles in a box set)")
-            .SupportsOption<string>("titlefont", "title font names", "Impact,Tahoma,Arial")
-            .SupportsOption<int>("titlefontsize", "size of title font in pixels", 180)
-            .SupportsOption<string>("subtitlefont", "subtitle font names", "Tahoma,Arial")
-            .SupportsOption<int>("subtitlefontsize", "size of subtitle font in pixels", 75)
-            .SupportsOption<string>("authorfont", "author font names", "Tahoma,Arial")
-            .SupportsOption<int>("authorfontsize", "size of author font in pixels", 110)
-            .SupportsOption<string>("seriesfont", "series font names", "Tahoma,Arial")
-            .SupportsOption<int>("seriesfontsize", "size of series font in pixels", 100)
+            .SupportsOption<string>("titlefont", "title font name,pixels", defaultTheme.TitleFont.ToString())
+            .SupportsOption<string>("subtitlefont", "subtitle font,pixels", defaultTheme.SubtitleFont.ToString())
+            .SupportsOption<string>("authorfont", "author font,pixels", defaultTheme.AuthorFont.ToString())
+            .SupportsOption<string>("seriesfont", "series font,pixels", defaultTheme.SeriesFont.ToString())
             .SupportsFlag("scaleauthor", "scale author name to fit its area")
             .SupportsFlag("scaleseries", "scale series name to fit its area")
             .SupportsFlag("debug", "show extra debugging info")
@@ -44,6 +40,10 @@ class Program
                 if (ext != ".html") errs.Add($"Not an HTML filename: {filename}");
                 return errs;
             })
+            .AddCustomOptionValidator("titlefont", CheckFont)
+            .AddCustomOptionValidator("subtitlefont", CheckFont)
+            .AddCustomOptionValidator("authorfont", CheckFont)
+            .AddCustomOptionValidator("seriesfont", CheckFont)
         ;
         parser.Help(2);
 
@@ -63,27 +63,21 @@ class Program
         Console.WriteLine();
         parser.ShowProvidedArguments(2);
 
-        // Determine what theme/themes need generating.
+        // Gather some essentials for generation.
         var filename = parser.GetOption<string>("file");
-
-        // Iterate through all requested themes (name, filename).
-        var generated = new Dictionary<string, string>();
         var outputFolder = Path.GetDirectoryName(Path.GetFullPath(filename));
         var isDebug = parser.IsFlagProvided("debug");
-        Console.WriteLine();
 
-        // Generate.
+        // Generate for all themes (name, theme details).
+        Console.WriteLine();
+        var generated = new Dictionary<string, string>();
         foreach (var sheetThemeName in Theme.GetStandardThemeNames())
         {
             var theme = Theme.GetStandardTheme(sheetThemeName);
-            theme.TitleFonts = parser.GetOption<string>("titlefont");
-            theme.SubtitleFonts = parser.GetOption<string>("subtitlefont");
-            theme.AuthorFonts = parser.GetOption<string>("authorfont");
-            theme.SeriesFonts = parser.GetOption<string>("seriesfont");
-            theme.TitleFontSize = parser.GetOption<int>("titlefontsize");
-            theme.SubtitleFontSize = parser.GetOption<int>("subtitlefontsize");
-            theme.AuthorFontSize = parser.GetOption<int>("authorfontsize");
-            theme.SeriesFontSize = parser.GetOption<int>("seriesfontsize");
+            theme.TitleFont = Font.Parse(parser.GetOption<string>("titlefont")).Font;
+            theme.SubtitleFont = Font.Parse(parser.GetOption<string>("subtitlefont")).Font;
+            theme.AuthorFont = Font.Parse(parser.GetOption<string>("authorfont")).Font;
+            theme.SeriesFont = Font.Parse(parser.GetOption<string>("seriesfont")).Font;
 
             var subtitle = parser.IsOptionProvided("subtitle")
                 ? parser.GetOption<string>("subtitle") : "";
@@ -107,5 +101,15 @@ class Program
         Console.WriteLine();
         Console.WriteLine("Done.");
         Console.WriteLine();
+    }
+
+    /// <summary>
+    /// Checks the given option value is a font Name,Pixels
+    /// value, returning a list of error messages if not.
+    /// </summary>
+    private static List<string> CheckFont(string key, object value)
+    {
+        var (errors, font) = Font.Parse($"{value}");
+        return errors;
     }
 }
