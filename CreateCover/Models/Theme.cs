@@ -15,7 +15,7 @@
 
         public Font TitleFont = new Font("", 0);
         public Font SubtitleFont = new Font("", 0);
-        public Font AuthorFont = new Font("", 0);
+        public Font AuthorFont = new Font("", 0, true);
         public Font SeriesFont = new Font("", 0);
 
         /// <summary>Start a new scheme.</summary>

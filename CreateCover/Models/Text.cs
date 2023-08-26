@@ -5,7 +5,7 @@ namespace CreateCover.Models
     /// <summary>Encapsulates a block of text.</summary>
     public class Text : ISVGElement
     {
-        public Extent BoundingBox { get; private set; }
+        public Extent LineExtent { get; private set; }
         public Anchor Anchor { get; private set; }
 
         public string FontNames { get; private set; }
@@ -23,7 +23,7 @@ namespace CreateCover.Models
 
         /// <summary>Start a new block of text.</summary>
         public Text(
-            Extent boundingBox,
+            Extent lineExtent,
             Anchor anchor,
             string fontNames,
             int fontSize,
@@ -32,7 +32,7 @@ namespace CreateCover.Models
             string content,
             bool scalable = false)
         {
-            BoundingBox = boundingBox;
+            LineExtent = lineExtent;
             Anchor = anchor;
             FontSize = fontSize;
             FontNames = fontNames.Trim();
@@ -43,16 +43,14 @@ namespace CreateCover.Models
 
             // Calculate the X position based on the anchor point.
             if (Anchor == Anchor.Left)
-                (TextX, TextY) = (boundingBox.X1, boundingBox.Y2);
+                (TextX, TextY) = (lineExtent.X1, lineExtent.Y2);
             if (Anchor == Anchor.Middle)
-                (TextX, TextY) = (boundingBox.X1 + (boundingBox.Width / 2), boundingBox.Y2);
+                (TextX, TextY) = (lineExtent.X1 + (lineExtent.Width / 2), lineExtent.Y2);
             if (Anchor == Anchor.Right)
-                (TextX, TextY) = (boundingBox.X2, boundingBox.Y2);
+                (TextX, TextY) = (lineExtent.X2, lineExtent.Y2);
 
             // Vertically centre within the bounding box.
-            var offset = (boundingBox.Height / 2) - (fontSize / 2);
-            TextY = boundingBox.Y2 - offset + 1;
-            TextY = (BoundingBox.MiddleY * 1005) / 1000;
+            TextY = LineExtent.MiddleY - 1;
         }
 
         /// <summary>Get the SVG source.</summary>
@@ -60,7 +58,7 @@ namespace CreateCover.Models
         {
             var anch = this.Anchor.ToString().ToLower();
             var bold = IsBold ? " font-weight=\"bold\"" : "";
-            var txtLen = Scalable ? $" textLength=\"{BoundingBox.Width}\"" : "";
+            var txtLen = Scalable ? $" textLength=\"{LineExtent.Width}\"" : "";
             var baseLine = " alignment-baseline=\"central\"";
             var adjust = Scalable ? " lengthAdjust=\"spacingAndGlyphs\"" : "";
             var y = TextY;
@@ -68,7 +66,7 @@ namespace CreateCover.Models
             var svg = "";
             if (debugInfo)
             {
-                var box = new Rectangle(BoundingBox, ForeColor, null, 5);
+                var box = new Rectangle(LineExtent, ForeColor, null, 5);
                 svg += box.GetSVG(false);
             }
             svg += $"<text{bold}{adjust}{baseLine}{txtLen} x=\"{TextX}\" y=\"{y}\" font-family=\"{FontNames}\" font-size=\"{FontSize}px\" text-anchor=\"{anch}\" fill=\"{ForeColor}\">{Content}</text>";
@@ -77,7 +75,7 @@ namespace CreateCover.Models
 
         public override string ToString()
         {
-            return $"TEXT {BoundingBox}  POS {TextX},{TextY}  FS {FontSize}px ({ForeColor} {Anchor}) `{Snippet}`";
+            return $"TEXT {LineExtent}  POS {TextX},{TextY}  FS {FontSize}px ({ForeColor} {Anchor}) `{Snippet}`";
         }
     }
 }

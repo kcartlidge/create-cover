@@ -8,12 +8,14 @@
 	{
 		public string Name = "";
 		public int Pixels = 0;
+        public bool Bold = false;
 
         /// <summary>Start a new font.</summary>
-		public Font(string name, int pixels)
-		{
+		public Font(string name, int pixels, bool bold = false)
+        {
             Name = string.IsNullOrWhiteSpace(name) ? "sans-serif" : name;
             Pixels = pixels < 1 ? 1 : pixels;
+            Bold = bold;
         }
 
         /// <summary>

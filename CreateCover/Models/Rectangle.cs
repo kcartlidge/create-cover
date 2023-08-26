@@ -25,7 +25,7 @@
             Extent boundingBox,
             Color? borderColor,
             Color? fillColor = null,
-            int strokeWidth = 15)
+            int strokeWidth = 1)
         {
             X1 = boundingBox.X1;
             Y1 = boundingBox.Y1;
