@@ -83,6 +83,8 @@
                 Blue, DarkBlue,
                 Green, DarkGreen,
                 Red, DarkRed,
+                DefaultPlain, BlackPlain,
+                DarkBluePlain, DarkGreenPlain, DarkRedPlain,
             })
                 themes.Add(theme().Name, theme().Settings);
             return themes;
@@ -287,6 +289,46 @@
             theme.AuthorBackColor = theme.TitleForeColor;
             theme.AuthorForeColor = theme.BackColor;
             return ("default-brown", theme);
+        }
+
+        private static (string Name, Theme Settings) DefaultPlain()
+        {
+            var (_, theme) = Default();
+            theme.AuthorBackColor = theme.BackColor;
+            theme.AuthorForeColor = theme.ForeColor;
+            return ("default-plain", theme);
+        }
+
+        private static (string Name, Theme Settings) BlackPlain()
+        {
+            var (_, theme) = Black();
+            theme.AuthorBackColor = theme.BackColor;
+            theme.AuthorForeColor = theme.ForeColor;
+            return ("black-plain", theme);
+        }
+
+        private static (string Name, Theme Settings) DarkBluePlain()
+        {
+            var (_, theme) = DarkBlue();
+            theme.AuthorBackColor = theme.BackColor;
+            theme.AuthorForeColor = theme.ForeColor;
+            return ("dark-blue-plain", theme);
+        }
+
+        private static (string Name, Theme Settings) DarkGreenPlain()
+        {
+            var (_, theme) = DarkGreen();
+            theme.AuthorBackColor = theme.BackColor;
+            theme.AuthorForeColor = theme.ForeColor;
+            return ("dark-green-plain", theme);
+        }
+
+        private static (string Name, Theme Settings) DarkRedPlain()
+        {
+            var (_, theme) = DarkRed();
+            theme.AuthorBackColor = theme.BackColor;
+            theme.AuthorForeColor = theme.ForeColor;
+            return ("dark-red-plain", theme);
         }
     }
 }

@@ -43,16 +43,18 @@ Example commands for when running directly from source (with dotnet 7+ installed
 
 ```sh
 cd <project>
-dotnet run -- -author "SIMON R GREEN" -file "../example-covers.html" -series "Hawk & Fisher 1-3" -subtitle "Hawk and Fisher|Winner Takes All|The God Killer" -title "Swords|of|Haven" -scaleauthor -scaleseries
-dotnet run -- -author "SIMON R GREEN" -file "../example-covers.html" -series "Hawk & Fisher 4-6" -subtitle "Wolf in the Fold|Guard Against Dishonor|The Bones of Haven" -title "Guards|of|Haven" -scaleauthor -scaleseries
+dotnet run -- -author "SIMON R GREEN" -file "../example-covers.html" -series "Hawk & Fisher 1-3" -subtitlefont "Tahoma,90" -subtitle "Hawk and Fisher|Winner Takes All|The God Killer" -title "Swords|of|Haven" -scaleauthor -scaleseries
+dotnet run -- -author "SIMON R GREEN" -file "../example-covers.html" -series "Hawk & Fisher 4-6" -subtitlefont "Tahoma,70" -subtitle "Wolf in the Fold|Guard Against Dishonor|The Bones of Haven" -title "Guards|of|Haven" -scaleauthor -scaleseries
+dotnet run -- -author "SIMON R GREEN" -file "../example-covers.html" -series "Forest Kingdom 3" -title "Down|Among|the|Dead Men" -authorfont "Tahoma,170" -scaleauthor -seriesfont "Tahoma,90"
 ```
 
 If you've added it to your path it's simpler (no dotnet installation required):
 
 ```sh
 cd <wherever>
-CreateCover -author "SIMON R GREEN" -file "../example-covers.html" -series "Hawk & Fisher 1-3" -subtitle "Hawk and Fisher|Winner Takes All|The God Killer" -title "Swords|of|Haven" -scaleauthor -scaleseries
-CreateCover -author "SIMON R GREEN" -file "../example-covers.html" -series "Hawk & Fisher 4-6" -subtitle "Wolf in the Fold|Guard Against Dishonor|The Bones of Haven" -title "Guards|of|Haven" -scaleauthor -scaleseries
+CreateCover -author "SIMON R GREEN" -file "../example-covers.html" -series "Hawk & Fisher 1-3" -subtitlefont "Tahoma,90" -subtitle "Hawk and Fisher|Winner Takes All|The God Killer" -title "Swords|of|Haven" -scaleauthor -scaleseries
+CreateCover -author "SIMON R GREEN" -file "../example-covers.html" -series "Hawk & Fisher 4-6" -subtitlefont "Tahoma,70" -subtitle "Wolf in the Fold|Guard Against Dishonor|The Bones of Haven" -title "Guards|of|Haven" -scaleauthor -scaleseries
+CreateCover -author "SIMON R GREEN" -file "../example-covers.html" -series "Forest Kingdom 3" -title "Down|Among|the|Dead Men" -authorfont "Tahoma,170" -scaleauthor -seriesfont "Tahoma,90"
 ```
 
 ### Supported options
@@ -107,8 +109,14 @@ Another option which often works is to use the double quotes but with an *escape
 
 ## Examples
 
+Here are some sample outputs.
+All were originally produced at 900x1350 but have been scaled down to 200x300 for use here.
+The second one was produced in `-debug` mode which adds boundary boxes for the text (and restricts the colours to help with the box visibility).
+
 ![The standard output](./example-default.png)
 ![With the `-debug` flag](./example-debug.png)
+![Using the dark-blue theme](./example-dark-blue.png)
+![Using the black-plain theme](./example-default-plain.png)
 
 ## Generating new builds
 

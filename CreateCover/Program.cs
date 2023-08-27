@@ -61,7 +61,7 @@ class Program
         // Display the provided arguments.
         Console.WriteLine("ARGUMENTS");
         Console.WriteLine();
-        parser.ShowProvidedArguments(2);
+        parser.ShowProvided(2);
 
         // Gather some essentials for generation.
         var filename = parser.GetOption<string>("file");
@@ -81,24 +81,8 @@ class Program
 
             var scaleAuthor = parser.IsFlagProvided("scaleauthor");
             var scaleSeries = parser.IsFlagProvided("scaleseries");
-            var cover2 = new Cover2(900, 1350, 40, 40, 20, 40, 20, parser, theme, scaleAuthor, scaleSeries);
-            generated.Add(sheetThemeName, cover2.GetSVG(isDebug));
-
-
-
-            //var subtitle = parser.IsOptionProvided("subtitle")
-            //    ? parser.GetOption<string>("subtitle") : "";
-            //var cover = new Cover(
-            //    900,
-            //    1350,
-            //    theme,
-            //    parser.GetOption<string>("title").Replace("\\n", "\n").Replace("|", "\n"),
-            //    subtitle.Replace("\\n", "\n").Replace("|", "\n"),
-            //    parser.GetOption<string>("author").Replace("\\n", "\n").Replace("|", "\n"),
-            //    parser.GetOption<string>("series").Replace("\\n", "\n").Replace("|", "\n"),
-            //    parser.IsFlagProvided("scaleauthor"),
-            //    parser.IsFlagProvided("scaleseries"));
-            //generated.Add(sheetThemeName, cover.GetSVG(isDebug));
+            var cover = new Cover(900, 1350, 40, 40, 20, 40, 20, parser, theme, scaleAuthor, scaleSeries);
+            generated.Add(sheetThemeName, cover.GetSVG(isDebug));
         }
 
         // Output the index sheet page with all the covers.
