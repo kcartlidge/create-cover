@@ -1,7 +1,7 @@
 ﻿# Create Cover
 
 Generate themed 900x1350 pixel book covers (SVG and PNG).
-Supports a small selection of themes using a standard (and auto-arranging) layout.
+Supports 4 themes x 20 colours using a standard (and auto-arranging) layout.
 
 *(Examples are at the bottom.)*
 
@@ -45,7 +45,7 @@ Example commands for when running directly from source (with dotnet 7+ installed
 cd <project>
 dotnet run -- -author "SIMON R GREEN" -file "../example-covers.html" -series "Hawk & Fisher 1-3" -subtitlefont "Tahoma,90" -subtitle "Hawk and Fisher|Winner Takes All|The God Killer" -title "Swords|of|Haven" -scaleauthor -scaleseries
 dotnet run -- -author "SIMON R GREEN" -file "../example-covers.html" -series "Hawk & Fisher 4-6" -subtitlefont "Tahoma,70" -subtitle "Wolf in the Fold|Guard Against Dishonor|The Bones of Haven" -title "Guards|of|Haven" -scaleauthor -scaleseries
-dotnet run -- -author "SIMON R GREEN" -file "../example-covers.html" -series "Forest Kingdom 3" -title "Down|Among|the|Dead Men" -authorfont "Tahoma,170" -scaleauthor -seriesfont "Tahoma,90"
+dotnet run -- -file "../example-covers.html" -title "Down|Among|the|Dead Men" -author "SIMON R GREEN" -series "Forest Kingdom 3" -authorfont "Tahoma,170" -seriesfont "Tahoma,90" -scaleauthor
 ```
 
 If you've added it to your path it's simpler (no dotnet installation required):
@@ -54,7 +54,7 @@ If you've added it to your path it's simpler (no dotnet installation required):
 cd <wherever>
 CreateCover -author "SIMON R GREEN" -file "../example-covers.html" -series "Hawk & Fisher 1-3" -subtitlefont "Tahoma,90" -subtitle "Hawk and Fisher|Winner Takes All|The God Killer" -title "Swords|of|Haven" -scaleauthor -scaleseries
 CreateCover -author "SIMON R GREEN" -file "../example-covers.html" -series "Hawk & Fisher 4-6" -subtitlefont "Tahoma,70" -subtitle "Wolf in the Fold|Guard Against Dishonor|The Bones of Haven" -title "Guards|of|Haven" -scaleauthor -scaleseries
-CreateCover -author "SIMON R GREEN" -file "../example-covers.html" -series "Forest Kingdom 3" -title "Down|Among|the|Dead Men" -authorfont "Tahoma,170" -scaleauthor -seriesfont "Tahoma,90"
+CreateCover -file "../example-covers.html" -title "Down|Among|the|Dead Men" -author "SIMON R GREEN" -series "Forest Kingdom 3" -authorfont "Tahoma,170" -seriesfont "Tahoma,90" -scaleauthor
 ```
 
 ### Supported options
@@ -113,10 +113,10 @@ Here are some sample outputs.
 All were originally produced at 900x1350 but have been scaled down to 200x300 for use here.
 The second one was produced in `-debug` mode which adds boundary boxes for the text (and restricts the colours to help with the box visibility).
 
-![The standard output](./example-default.png)
-![With the `-debug` flag](./example-debug.png)
-![Using the dark-blue theme](./example-dark-blue.png)
-![Using the black-plain theme](./example-default-plain.png)
+![01](./01.png)
+![02](./02.png)
+![03](./03.png)
+![04](./04.png)
 
 ## Generating new builds
 

@@ -6,6 +6,8 @@
     /// </summary>
     public class Theme
     {
+        public string Grouping = "";
+        public string Colouring = "";
         public Color BackColor = Color.White;
         public Color ForeColor = Color.Black;
         public Color TitleForeColor = Color.Black;
@@ -18,8 +20,37 @@
         public Font AuthorFont = new Font("", 0, true);
         public Font SeriesFont = new Font("", 0);
 
+        public string Name => $"{Grouping} {Colouring}";
+
+        private static readonly Dictionary<string, Color> schemes = new()
+            {
+                {"White", Color.FromHTML("FFFFFF")},
+                {"Black", Color.FromHTML("000000")},
+                {"Dark Grey", Color.FromHTML("6E6E6E")},
+                {"Red", Color.FromHTML("E24040")},
+                {"Dark Red", Color.FromHTML("884444")},
+                {"Cyan", Color.FromHTML("7FDBE6")},
+                {"Blue", Color.FromHTML("246FB9")},
+                {"Dark Blue", Color.FromHTML("1E5183")},
+                {"Steel Blue", Color.FromHTML("476d76")},
+                {"Green", Color.FromHTML("009933")},
+                {"Dark Green", Color.FromHTML("5A7B4C")},
+                {"Blue Wash", Color.FromHTML("76B5C5")},
+                {"Red Wash", Color.FromHTML("E6A0A8")},
+                {"Yellow", Color.FromHTML("F9EAA1")},
+                {"Yellow-Green", Color.FromHTML("DDDD88")},
+                {"Pale Yellow", Color.FromHTML("C5B35F")},
+                {"Orange", Color.FromHTML("FFAA55")},
+                {"Pale Orange", Color.FromHTML("F1CE9F")},
+                {"Brown", Color.FromHTML("945C22")},
+                {"Pale Violet", Color.FromHTML("C0ADDC")},
+                {"Deep Purple", Color.FromHTML("5A4776")},
+            };
+
         /// <summary>Start a new scheme.</summary>
         public static Theme Create(
+            string grouping,
+            string colouring,
             Color backColor,
             Color foreColor,
             Color titleForeColor,
@@ -33,6 +64,8 @@
         {
             return new Theme
             {
+                Grouping = grouping,
+                Colouring = colouring,
                 BackColor = backColor,
                 ForeColor = foreColor,
                 TitleForeColor = titleForeColor,
@@ -49,7 +82,13 @@
         /// <summary>Is this a known standard scheme?</summary>
         public static bool IsStandardTheme(string themeName)
         {
-            return StandardThemes().ContainsKey(themeName.ToLowerInvariant());
+            return StandardThemes().ContainsKey(themeName);
+        }
+
+        /// <summary>Get the collection of known standard scheme groupings.</summary>
+        public static List<string> GetStandardThemeGroupings()
+        {
+            return StandardThemes().Select(x => x.Value.Grouping).ToList();
         }
 
         /// <summary>Get the collection of known standard schemes.</summary>
@@ -67,268 +106,80 @@
         /// <summary>Return the named standard scheme.</summary>
         public static Theme GetStandardTheme(string themeName)
         {
-            return StandardThemes()[themeName.ToLowerInvariant()];
+            return StandardThemes()[themeName];
         }
 
         private static Dictionary<string, Theme> StandardThemes()
         {
             var themes = new Dictionary<string, Theme>();
-            foreach (var theme in new[] {
-                Default,
-                DefaultBlue, DefaultDarkBlue,
-                DefaultGreen, DefaultDarkGreen,
-                DefaultRed, DefaultDarkRed,
-                DefaultBrown,
-                OffYellow, Orange, Brown, Black,
-                Blue, DarkBlue,
-                Green, DarkGreen,
-                Red, DarkRed,
-                DefaultPlain, BlackPlain,
-                DarkBluePlain, DarkGreenPlain, DarkRedPlain,
-            })
-                themes.Add(theme().Name, theme().Settings);
+            var (w, b) = (Color.White, Color.Black);
+            foreach (var (n, c) in schemes)
+            {
+                if (n == "White") continue;
+                var t = NewTheme("Plain", n, w, b, c, w, b);
+                themes.Add(t.Name, t);
+            }
+            foreach (var (n, c) in schemes)
+            {
+                if (n == "White") continue;
+                var t = NewTheme("Plain Striped", n, w, b, b, c, w);
+                if (c.IsLight()) t.AuthorForeColor = b;
+                themes.Add(t.Name, t);
+            }
+            foreach (var (n, c) in schemes)
+            {
+                if (n == "White") continue;
+                var t = NewTheme("Solid", n, c, b, b, c, b);
+                if (c.IsDark)
+                {
+                    t.ForeColor = w;
+                    t.TitleForeColor = w;
+                    t.AuthorForeColor = w;
+                }
+                themes.Add(t.Name, t);
+            }
+            foreach (var (n, c) in schemes)
+            {
+                if (n == "White") continue;
+                var t = NewTheme("Solid Striped", n, c, w, w, w, c);
+                if (c.IsLight())
+                {
+                    t.ForeColor = b;
+                    t.TitleForeColor = b;
+                    t.AuthorBackColor = b;
+                    t.AuthorForeColor = w;
+                }
+                themes.Add(t.Name, t);
+            }
             return themes;
         }
 
-        private static (string Name, Theme Settings) Default()
+        private static Theme NewTheme(
+            string grouping,
+            string colouring,
+            Color backColor,
+            Color foreColor,
+            Color titleForeColor,
+            Color authorBackColor,
+            Color authorForeColor)
         {
-            return ("default", Create(
-                Color.White, Color.Black,
-                Color.Black,
-                Color.Black, Color.White,
+            return Create(
+                grouping,
+                colouring,
+                backColor, foreColor,
+                titleForeColor,
+                authorBackColor, authorForeColor,
                 Color.Black,
                 new Font("Impact", 180),
                 new Font("Tahoma", 75),
                 new Font("Tahoma", 110),
                 new Font("Tahoma", 100)
-                ));
+                );
         }
 
-        private static (string Name, Theme Settings) Black()
+        public override string ToString()
         {
-            var (_, theme) = Default();
-            theme.BackColor = Color.Black;
-            theme.ForeColor = Color.White;
-            theme.TitleForeColor = theme.ForeColor;
-            theme.AuthorBackColor = Color.White;
-            theme.AuthorForeColor = Color.Black;
-            return ("black", theme);
-        }
-
-        private static (string Name, Theme Settings) DefaultBlue()
-        {
-            var (_, theme) = Default();
-            theme.BackColor = Color.White;
-            theme.ForeColor = Color.Black;
-            theme.TitleForeColor = new Color("246FB9");
-            theme.AuthorBackColor = theme.TitleForeColor;
-            theme.AuthorForeColor = theme.BackColor;
-            return ("default-blue", theme);
-        }
-
-        private static (string Name, Theme Settings) DefaultDarkBlue()
-        {
-            var (_, theme) = Default();
-            theme.BackColor = Color.White;
-            theme.ForeColor = Color.Black;
-            theme.TitleForeColor = new Color("1e5183");
-            theme.AuthorBackColor = theme.TitleForeColor;
-            theme.AuthorForeColor = theme.BackColor;
-            return ("default-dark-blue", theme);
-        }
-
-        private static (string Name, Theme Settings) Blue()
-        {
-            var (_, theme) = Default();
-            theme.BackColor = new Color("246FB9");
-            theme.ForeColor = Color.White;
-            theme.TitleForeColor = theme.ForeColor;
-            theme.AuthorBackColor = theme.ForeColor;
-            theme.AuthorForeColor = theme.BackColor;
-            return ("blue", theme);
-        }
-
-        private static (string Name, Theme Settings) DarkBlue()
-        {
-            var (_, theme) = Default();
-            theme.BackColor = new Color("1e5183");
-            theme.ForeColor = Color.White;
-            theme.TitleForeColor = theme.ForeColor;
-            theme.AuthorBackColor = Color.White;
-            theme.AuthorForeColor = Color.Black;
-            return ("dark-blue", theme);
-        }
-
-        private static (string Name, Theme Settings) DefaultGreen()
-        {
-            var (_, theme) = Default();
-            theme.BackColor = Color.White;
-            theme.ForeColor = Color.Black;
-            theme.TitleForeColor = new Color("009933");
-            theme.AuthorBackColor = theme.TitleForeColor;
-            theme.AuthorForeColor = theme.BackColor;
-            return ("default-green", theme);
-        }
-
-        private static (string Name, Theme Settings) DefaultDarkGreen()
-        {
-            var (_, theme) = Default();
-            theme.BackColor = Color.White;
-            theme.ForeColor = Color.Black;
-            theme.TitleForeColor = new Color("5a7b4c");
-            theme.AuthorBackColor = theme.TitleForeColor;
-            theme.AuthorForeColor = theme.BackColor;
-            return ("default-dark-green", theme);
-        }
-
-        private static (string Name, Theme Settings) Green()
-        {
-            var (_, theme) = Default();
-            theme.BackColor = new Color("009933");
-            theme.ForeColor = Color.White;
-            theme.TitleForeColor = theme.ForeColor;
-            theme.AuthorBackColor = theme.ForeColor;
-            theme.AuthorForeColor = theme.BackColor;
-            return ("green", theme);
-        }
-
-        private static (string Name, Theme Settings) DarkGreen()
-        {
-            var (_, theme) = Default();
-            theme.BackColor = new Color("5a7b4c");
-            theme.ForeColor = Color.White;
-            theme.TitleForeColor = theme.ForeColor;
-            theme.AuthorBackColor = Color.White;
-            theme.AuthorForeColor = Color.Black;
-            return ("dark-green", theme);
-        }
-
-        private static (string Name, Theme Settings) DefaultRed()
-        {
-            var (_, theme) = Default();
-            theme.BackColor = Color.White;
-            theme.ForeColor = Color.Black;
-            theme.TitleForeColor = new Color("E24040");
-            theme.AuthorBackColor = theme.TitleForeColor;
-            theme.AuthorForeColor = theme.BackColor;
-            return ("default-red", theme);
-        }
-
-        private static (string Name, Theme Settings) DefaultDarkRed()
-        {
-            var (_, theme) = Default();
-            theme.BackColor = Color.White;
-            theme.ForeColor = Color.Black;
-            theme.TitleForeColor = new Color("884444");
-            theme.AuthorBackColor = theme.TitleForeColor;
-            theme.AuthorForeColor = theme.BackColor;
-            return ("default-dark-red", theme);
-        }
-
-        private static (string Name, Theme Settings) Red()
-        {
-            var (_, theme) = Default();
-            theme.BackColor = new Color("E24040");
-            theme.ForeColor = Color.White;
-            theme.TitleForeColor = theme.ForeColor;
-            theme.AuthorBackColor = theme.ForeColor;
-            theme.AuthorForeColor = theme.BackColor;
-            return ("red", theme);
-        }
-
-        private static (string Name, Theme Settings) DarkRed()
-        {
-            var (_, theme) = Default();
-            theme.BackColor = new Color("884444");
-            theme.ForeColor = Color.White;
-            theme.TitleForeColor = theme.ForeColor;
-            theme.AuthorBackColor = theme.ForeColor;
-            theme.AuthorForeColor = theme.BackColor;
-            return ("dark-red", theme);
-        }
-
-        private static (string Name, Theme Settings) OffYellow()
-        {
-            var (_, theme) = Default();
-            theme.BackColor = new Color("DDDD88");
-            theme.ForeColor = Color.Black;
-            theme.TitleForeColor = theme.ForeColor;
-            theme.AuthorBackColor = theme.ForeColor;
-            theme.AuthorForeColor = Color.White;
-            return ("off-yellow", theme);
-        }
-
-        private static (string Name, Theme Settings) Orange()
-        {
-            var (_, theme) = Default();
-            theme.BackColor = new Color("FFAA55");
-            theme.ForeColor = Color.Black;
-            theme.TitleForeColor = theme.ForeColor;
-            theme.AuthorBackColor = theme.ForeColor;
-            theme.AuthorForeColor = Color.White;
-            return ("orange", theme);
-        }
-
-        private static (string Name, Theme Settings) Brown()
-        {
-            var (_, theme) = Default();
-            theme.BackColor = new Color("945C22");
-            theme.ForeColor = Color.White;
-            theme.TitleForeColor = theme.ForeColor;
-            theme.AuthorBackColor = theme.ForeColor;
-            theme.AuthorForeColor = theme.BackColor;
-            return ("brown", theme);
-        }
-
-        private static (string Name, Theme Settings) DefaultBrown()
-        {
-            var (_, theme) = Default();
-            theme.BackColor = Color.White;
-            theme.ForeColor = Color.Black;
-            theme.TitleForeColor = new Color("945C22");
-            theme.AuthorBackColor = theme.TitleForeColor;
-            theme.AuthorForeColor = theme.BackColor;
-            return ("default-brown", theme);
-        }
-
-        private static (string Name, Theme Settings) DefaultPlain()
-        {
-            var (_, theme) = Default();
-            theme.AuthorBackColor = theme.BackColor;
-            theme.AuthorForeColor = theme.ForeColor;
-            return ("default-plain", theme);
-        }
-
-        private static (string Name, Theme Settings) BlackPlain()
-        {
-            var (_, theme) = Black();
-            theme.AuthorBackColor = theme.BackColor;
-            theme.AuthorForeColor = theme.ForeColor;
-            return ("black-plain", theme);
-        }
-
-        private static (string Name, Theme Settings) DarkBluePlain()
-        {
-            var (_, theme) = DarkBlue();
-            theme.AuthorBackColor = theme.BackColor;
-            theme.AuthorForeColor = theme.ForeColor;
-            return ("dark-blue-plain", theme);
-        }
-
-        private static (string Name, Theme Settings) DarkGreenPlain()
-        {
-            var (_, theme) = DarkGreen();
-            theme.AuthorBackColor = theme.BackColor;
-            theme.AuthorForeColor = theme.ForeColor;
-            return ("dark-green-plain", theme);
-        }
-
-        private static (string Name, Theme Settings) DarkRedPlain()
-        {
-            var (_, theme) = DarkRed();
-            theme.AuthorBackColor = theme.BackColor;
-            theme.AuthorForeColor = theme.ForeColor;
-            return ("dark-red-plain", theme);
+            return Name;
         }
     }
 }

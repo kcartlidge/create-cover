@@ -19,7 +19,7 @@ class Program
         // Define and show command arguments.
         Console.WriteLine("OPTIONS");
         Console.WriteLine();
-        var defaultTheme = Theme.GetStandardTheme("default");
+        var defaultTheme = Theme.GetStandardTheme("Plain Black");
         var parser = new Parser(args)
             .RequiresOption<string>("file", "where to write the output", "covers.html")
             .RequiresOption<string>("title", "the book title (eg \"The | Fellowship | of the | Ring\")")

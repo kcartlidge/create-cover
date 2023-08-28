@@ -68,6 +68,14 @@
                 return $"{Red:X2}{Green:X2}{Blue:X2}";
         }
 
+        public bool IsLight()
+        {
+            var average = (Red + Green + Blue) / 3;
+            return average > 127;
+        }
+
+        public bool IsDark => IsLight() == false;
+
         /// <summary>
         /// Returns as per the AsHex() method, however in this
         /// case there WILL be a leading hash character.

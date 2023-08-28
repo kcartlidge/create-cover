@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using ArgsParser;
+using CreateCover.Models;
 
 namespace CreateCover
 {
@@ -13,7 +14,7 @@ namespace CreateCover
             Console.WriteLine($"WRITING");
             Console.WriteLine($"  {outputFile}");
 
-            // Could be a resource, but extracting/writing isn't worth it just for this.
+            // Could be a resource but extracting, tokenising, and writing it isn't worth it just for this.
             var html = new StringBuilder();
 
             // Preamble and styling.
@@ -22,16 +23,17 @@ namespace CreateCover
             html.AppendLine("  <meta charset=\"utf-8\">");
             html.AppendLine("  <style>");
             html.AppendLine("    html{font-family:monospace;font-size:11pt;}");
-            html.AppendLine("    body{margin:1rem 2rem;padding:0;background:#fff;color:#000;}");
+            html.AppendLine("    body{margin:1rem 2rem;padding:0;background:#fff;color:#000;max-width:90rem;}");
             html.AppendLine("    pre{background:#eee;padding:1rem;overflow-x:scroll;}");
             html.AppendLine("    h1{font-size:2rem;letter-spacing:-1px;}");
-            html.AppendLine("    div{display:inline-block;margin:1rem 1rem 1rem 1rem;}");
+            html.AppendLine("    div{display:inline-block;margin:0.75rem;}");
             html.AppendLine("    div.large{padding-top:2rem;}");
-            html.AppendLine("    h2{font-size:1rem;font-weight:normal;margin:0;text-align:center;}");
-            html.AppendLine("    canvas{background:#fff;display:block;margin:0 0 4rem 0;}");
+            html.AppendLine("    h2{margin:2rem 0 1rem 0;text-align:center;}");
+            html.AppendLine("    h3{font-size:1rem;font-weight:normal;margin:0;text-align:center;}");
+            html.AppendLine("    canvas{background:#fff;display:block;margin:0 auto 4rem auto;}");
             html.AppendLine("    canvas{background-image: linear-gradient(-45deg, #eee 25%, transparent 25%, transparent 50%, #eee 50%, #eee 75%, transparent 75%, transparent);background-size:48px 48px;}");
             html.AppendLine("    svg{display:block;box-shadow:0 0 1rem rgba(0,0,0,0.5);}");
-            html.AppendLine("    .small svg{width:135px;height:202px;cursor:pointer;}");
+            html.AppendLine("    .small svg{width:200px;height:300px;cursor:pointer;}");
             html.AppendLine("    .anim{animation:wobble 0.25s;}");
             html.AppendLine("");
             html.AppendLine("    @keyframes wobble{");
@@ -62,20 +64,33 @@ namespace CreateCover
             if (parser.IsFlagProvided("debug"))
                 html.AppendLine("<br/><strong>Generated in -debug mode</strong> so some theming is removed to improve visibility of the boundary boxes.");
             html.AppendLine("</p>");
-            foreach (var (themename, svg) in images)
+            var themed = images
+                .Select(x => Theme.GetStandardTheme(x.Key))
+                .OrderBy(x => x.Grouping)
+                .ThenBy(x => x.Colouring)
+                .ToList();
+            var lastGroup = "";
+            foreach (var theme in themed)
             {
+                if (theme.Grouping != lastGroup)
+                {
+                    html.AppendLine("  <hr/>");
+                    html.AppendLine($"  <h2>{theme.Grouping}</h2>");
+                }
+                var svg = images[theme.Name];
                 var base64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(svg));
-                var hint = $"Draw 900x1350 PNG cover for theme `{themename}` below";
+                var hint = $"Theme: `{theme.Name}` -- click to draw a 900x1350 PNG version below";
                 var handler = $" onclick=\"draw(this, '{base64}')\"";
-                html.AppendLine($"  <div>");
-                html.AppendLine($"    <h2>\"{themename}\"</h2>");
+                html.AppendLine($"  <div class=\"thumbnail\">");
+                html.AppendLine($"    <h3>{theme.Colouring}</h3>");
                 html.AppendLine($"    <div class=\"small\"{handler} title=\"{hint}\">{svg}</div>");
                 html.AppendLine($"  </div>");
+                lastGroup = theme.Grouping;
             }
             html.AppendLine("  <hr/>");
 
             // Instructions and element for the PNG version.
-            html.AppendLine("  <h3>900x1350 PNG - click a theme above</h3>");
+            html.AppendLine("  <h2>900x1350 PNG - click a theme above</h2>");
             html.AppendLine("  <canvas width=\"900\" height=\"1350\"></canvas>");
 
             // Function that does the PNG rendering.

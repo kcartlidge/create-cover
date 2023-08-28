@@ -72,32 +72,41 @@ namespace CreateCover.Models
             // Derive the strips running naively down the page.
             TitleStrip = new Strip(
                 GetExtent(theme.TitleFont.Pixels, TitleText),
-                coverPadX + stripPadX, stripPadY,
-                theme.BackColor, theme.TitleForeColor,
-                theme.TitleFont, TitleText, false);
+                    coverPadX + stripPadX, stripPadY,
+                    theme.BackColor, theme.TitleForeColor,
+                    theme.TitleFont, TitleText, false);
             if (Parser.IsOptionProvided("subtitle"))
             {
-                NextY += theme.SubtitleFont.Pixels / 2;
+                NextY += theme.SubtitleFont.Pixels / 4;
                 SubtitleStrip = new Strip(
-                GetExtent(theme.SubtitleFont.Pixels, SubtitleText),
-                coverPadX + stripPadX, stripPadY,
-                theme.BackColor, theme.ForeColor,
-                theme.SubtitleFont, SubtitleText, false);
+                    GetExtent(theme.SubtitleFont.Pixels, SubtitleText),
+                    coverPadX + stripPadX, stripPadY,
+                    theme.BackColor, theme.ForeColor,
+                    theme.SubtitleFont, SubtitleText, false);
             }
             AuthorStrip = new Strip(
                 GetExtent(theme.AuthorFont.Pixels, AuthorText),
-                coverPadX + stripPadX, stripPadY,
-                theme.AuthorBackColor, theme.AuthorForeColor,
-                theme.AuthorFont, AuthorText, ScaleAuthor);
+                    coverPadX + stripPadX, stripPadY,
+                    theme.AuthorBackColor, theme.AuthorForeColor,
+                    theme.AuthorFont, AuthorText, ScaleAuthor);
             SeriesStrip = new Strip(
                 GetExtent(theme.SeriesFont.Pixels, SeriesText),
-                coverPadX + stripPadX, stripPadY,
-                theme.BackColor, theme.ForeColor,
-                theme.SeriesFont, SeriesText, ScaleSeries);
+                    coverPadX + stripPadX, stripPadY,
+                    theme.BackColor, theme.ForeColor,
+                    theme.SeriesFont, SeriesText, ScaleSeries);
 
             // Adjust the author and series to be bottom-aligned.
             SeriesStrip = MoveStrip(SeriesStrip, null, Height - (borderStroke / 2) - coverPadY);
             AuthorStrip = MoveStrip(AuthorStrip, null, SeriesStrip.Extent.Y1 - 1);
+
+            // Adjust the title and subtitle to be middle-aligned in the space above.
+            var availableHeight = AuthorStrip.Extent.Y1 - CoverPadY;
+            var requiredHeight = TitleStrip.Extent.Height;
+            if (hasSubtitle) requiredHeight = SubtitleStrip.Extent.Y2 - TitleStrip.Extent.Y1;
+            var halfHeightDifference = (availableHeight - requiredHeight) / 2;
+            TitleStrip = MoveStrip(TitleStrip, TitleStrip.Extent.Y1 + halfHeightDifference, null);
+            if (hasSubtitle)
+                SubtitleStrip = MoveStrip(SubtitleStrip, TitleStrip.Extent.Y2 + 1, null);
         }
 
         /// <summary>Get the SVG source.</summary>
