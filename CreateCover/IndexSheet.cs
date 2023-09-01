@@ -9,6 +9,7 @@ namespace CreateCover
 		public static void Write(
             string outputFile,
             Parser parser,
+            string slug,
             Dictionary<string, string> images)
 		{
             Console.WriteLine($"WRITING");
@@ -22,7 +23,7 @@ namespace CreateCover
             html.AppendLine("<head>");
             html.AppendLine("  <meta charset=\"utf-8\">");
             html.AppendLine("  <style>");
-            html.AppendLine("    html{font-family:monospace;font-size:11pt;}");
+            html.AppendLine("    html{font-family:monospace;font-size:10pt;}");
             html.AppendLine("    body{margin:1rem 2rem;padding:0;background:#fff;color:#000;max-width:90rem;}");
             html.AppendLine("    pre{background:#eee;padding:1rem;overflow-x:scroll;}");
             html.AppendLine("    h1{font-size:2rem;letter-spacing:-1px;}");
@@ -30,6 +31,7 @@ namespace CreateCover
             html.AppendLine("    div.large{padding-top:2rem;}");
             html.AppendLine("    h2{margin:2rem 0 1rem 0;text-align:center;}");
             html.AppendLine("    h3{font-size:1rem;font-weight:normal;margin:0;text-align:center;}");
+            html.AppendLine("    a{margin:2rem auto;text-align:center;color:#fff;padding:0.5rem 2rem;background:#5186cf;text-decoration:none;}");
             html.AppendLine("    canvas{background:#fff;display:block;margin:0 auto 4rem auto;}");
             html.AppendLine("    canvas{background-image: linear-gradient(-45deg, #eee 25%, transparent 25%, transparent 50%, #eee 50%, #eee 75%, transparent 75%, transparent);background-size:48px 48px;}");
             html.AppendLine("    svg{display:block;box-shadow:0 0 1rem rgba(0,0,0,0.5);}");
@@ -80,7 +82,7 @@ namespace CreateCover
                 var svg = images[theme.Name];
                 var base64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(svg));
                 var hint = $"Theme: `{theme.Name}` -- click to draw a 900x1350 PNG version below";
-                var handler = $" onclick=\"draw(this, '{base64}')\"";
+                var handler = $" onclick=\"draw(this, '{base64}', '{slug}', '{theme.Name.Slugify()}')\"";
                 html.AppendLine($"  <div class=\"thumbnail\">");
                 html.AppendLine($"    <h3>{theme.Colouring}</h3>");
                 html.AppendLine($"    <div class=\"small\"{handler} title=\"{hint}\">{svg}</div>");
@@ -90,16 +92,22 @@ namespace CreateCover
             html.AppendLine("  <hr/>");
 
             // Instructions and element for the PNG version.
-            html.AppendLine("  <h2>900x1350 PNG - click a theme above</h2>");
-            html.AppendLine("  <canvas width=\"900\" height=\"1350\"></canvas>");
+            html.AppendLine($"  <h2>");
+            html.AppendLine($"    900x1350 PNG - click a theme above<br/>");
+            html.AppendLine($"    <a id=\"download-link\" style=\"display:none;\" href=\"#\" onclick=\"saveImageAsFile();return false;\">Click here to download the image below</a>");
+            html.AppendLine($"  </h2>");
+            html.AppendLine($"  <canvas width=\"900\" height=\"1350\"></canvas>");
 
             // Function that does the PNG rendering.
             html.AppendLine();
             html.AppendLine($"  <script>");
+            html.AppendLine($"  var svg = \"\"");
+            html.AppendLine($"  var filename = \"\"");
+            html.AppendLine();
             html.AppendLine($"  // Draws an SVG 'source' (Base64) onto the canvas.");
             html.AppendLine($"  // The 'elem' is the enclosing element that will");
             html.AppendLine($"  // be animated when clicked.");
-            html.AppendLine($"  function draw(elem, svgSource) {{");
+            html.AppendLine($"  function draw(elem, svgSource, title, theme) {{");
             html.AppendLine($"    // Apply the on-click animation.");
             html.AppendLine($"    elem.classList.remove('anim');");
             html.AppendLine($"    void elem.offsetWidth;");
@@ -109,13 +117,27 @@ namespace CreateCover
             html.AppendLine($"    var canvas = document.querySelector(\"canvas\");");
             html.AppendLine($"    var context = canvas.getContext(\"2d\");");
             html.AppendLine($"    var image = new Image;");
-            html.AppendLine($"    image.src = \"data:image/svg+xml;base64,\" + svgSource;");
+            html.AppendLine($"    svg = \"data:image/svg+xml;base64,\" + svgSource;");
+            html.AppendLine($"    filename = title + \" -- \" + theme + \".png\";");
+            html.AppendLine($"    image.src = svg;");
             html.AppendLine($"");
             html.AppendLine($"    // Event handler to do the draw.");
             html.AppendLine($"    image.onload = function() {{");
             html.AppendLine($"      context.drawImage(image, 0, 0, 900, 1350);");
+            html.AppendLine($"      var a = document.querySelector(\"#download-link\");");
+            html.AppendLine($"      a.style.display = \"inline-block\";");
             html.AppendLine($"    }};");
             html.AppendLine($"  }};");
+            html.AppendLine($"");
+            html.AppendLine($"  // Starts a download of the full-size cover image.");
+            html.AppendLine($"  function saveImageAsFile() {{");
+            html.AppendLine($"    var link = document.createElement(\"a\");");
+            html.AppendLine($"    document.body.appendChild(link);");
+            html.AppendLine($"    link.setAttribute(\"href\", svg);");
+            html.AppendLine($"    link.setAttribute(\"download\", filename);");
+            html.AppendLine($"    link.click();");
+            html.AppendLine($"    setTimeout(function() {{ link.remove(); }}, 500);");
+            html.AppendLine($"  }}");
             html.AppendLine($"  </script>");
 
             // Done.

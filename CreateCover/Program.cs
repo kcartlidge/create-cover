@@ -86,7 +86,8 @@ class Program
         }
 
         // Output the index sheet page with all the covers.
-        IndexSheet.Write(filename, parser, generated);
+        var slug = parser.GetOption<string>("title").Slugify();
+        IndexSheet.Write(filename, parser, slug, generated);
 
         // Confirm.
         Console.WriteLine();
