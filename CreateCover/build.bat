@@ -3,6 +3,9 @@
 @echo.
 @echo PRODUCING CROSS-PLATFORM BUILDS
 @echo Should be run in the CreateCover/CreateCover PROJECT folder
+@echo.
+@echo Press enter to continue, Ctrl+C to stop ..
+@pause >NUL
 
 @echo.
 @echo.
@@ -11,7 +14,7 @@
 @echo ========
 @echo.
 @rd /S /Q builds 2>NUL
-@dotnet ..\build
+@dotnet build
 
 @echo.
 @echo.
