@@ -30,6 +30,7 @@ class Program
             .SupportsOption<string>("subtitlefont", "subtitle font,pixels", defaultTheme.SubtitleFont.ToString())
             .SupportsOption<string>("authorfont", "author font,pixels", defaultTheme.AuthorFont.ToString())
             .SupportsOption<string>("seriesfont", "series font,pixels", defaultTheme.SeriesFont.ToString())
+            .SupportsFlag("transparent", "the cover has no background colour")
             .SupportsFlag("scaleauthor", "scale author name to fit its area")
             .SupportsFlag("scaleseries", "scale series name to fit its area")
             .SupportsFlag("debug", "show extra debugging info")

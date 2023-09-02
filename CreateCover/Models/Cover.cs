@@ -70,11 +70,12 @@ namespace CreateCover.Models
                 Theme.AuthorForeColor = Theme.ForeColor;
 
             // Derive the strips running naively down the page.
+            var transparent = Parser.IsFlagProvided("transparent");
             TitleStrip = new Strip(
                 GetExtent(theme.TitleFont.Pixels, TitleText),
                     coverPadX + stripPadX, stripPadY,
                     theme.BackColor, theme.TitleForeColor,
-                    theme.TitleFont, TitleText, false);
+                    theme.TitleFont, TitleText, false, transparent);
             if (Parser.IsOptionProvided("subtitle"))
             {
                 NextY += theme.SubtitleFont.Pixels / 4;
@@ -82,18 +83,18 @@ namespace CreateCover.Models
                     GetExtent(theme.SubtitleFont.Pixels, SubtitleText),
                     coverPadX + stripPadX, stripPadY,
                     theme.BackColor, theme.ForeColor,
-                    theme.SubtitleFont, SubtitleText, false);
+                    theme.SubtitleFont, SubtitleText, false, transparent);
             }
             AuthorStrip = new Strip(
                 GetExtent(theme.AuthorFont.Pixels, AuthorText),
                     coverPadX + stripPadX, stripPadY,
                     theme.AuthorBackColor, theme.AuthorForeColor,
-                    theme.AuthorFont, AuthorText, ScaleAuthor);
+                    theme.AuthorFont, AuthorText, ScaleAuthor, false);
             SeriesStrip = new Strip(
                 GetExtent(theme.SeriesFont.Pixels, SeriesText),
                     coverPadX + stripPadX, stripPadY,
                     theme.BackColor, theme.ForeColor,
-                    theme.SeriesFont, SeriesText, ScaleSeries);
+                    theme.SeriesFont, SeriesText, ScaleSeries, transparent);
 
             // Adjust the author and series to be bottom-aligned.
             SeriesStrip = MoveStrip(SeriesStrip, null, Height - (borderStroke / 2) - coverPadY);
@@ -114,7 +115,8 @@ namespace CreateCover.Models
         {
             // Start the SVG and add the sections.
             var svg = new SVG(Width, Height, Theme.BackColor, Theme.ForeColor);
-            svg.Add(new Rectangle(svg.BoundingBox, Theme.BackColor, Theme.BackColor));
+            if (Parser.IsFlagProvided("transparent") == false)
+                svg.Add(new Rectangle(svg.BoundingBox, Theme.BackColor, Theme.BackColor));
 
             // Add the strips backgrounds.
             var strips = new[] { TitleStrip, SubtitleStrip, AuthorStrip, SeriesStrip };
@@ -122,13 +124,10 @@ namespace CreateCover.Models
             {
                 if (strip == null) continue;
                 if (debugInfo)
-                {
                     svg.Add(new Rectangle(strip.TextArea, Color.Black, null, 4));
-                }
-                else
-                {
+                else if (strip.Transparent == false)
                     svg.Add(new Rectangle(strip.BackgroundArea, null, strip.BackColor));
-                }
+
                 var y = strip.TextArea.Y1;
                 var lineHeight = strip.Font.Pixels;
                 foreach (var line in strip.Content.Split("\n", StringSplitOptions.TrimEntries))

@@ -75,6 +75,7 @@
         }
 
         public bool IsDark => IsLight() == false;
+        public bool IsTransparent => Alpha == 0;
 
         /// <summary>
         /// Returns as per the AsHex() method, however in this

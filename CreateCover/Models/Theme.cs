@@ -21,6 +21,7 @@
         public Font SeriesFont = new Font("", 0);
 
         public string Name => $"{Grouping} {Colouring}";
+        public bool IsTransparent => BackColor.IsTransparent;
 
         private static readonly Dictionary<string, Color> schemes = new()
             {
@@ -117,6 +118,7 @@
             {
                 if (n == "White") continue;
                 var t = NewTheme("Plain", n, w, b, c, w, b);
+                if (c.IsTransparent) t.BackColor = c;
                 themes.Add(t.Name, t);
             }
             foreach (var (n, c) in schemes)
@@ -124,6 +126,7 @@
                 if (n == "White") continue;
                 var t = NewTheme("Plain Striped", n, w, b, b, c, w);
                 if (c.IsLight()) t.AuthorForeColor = b;
+                if (c.IsTransparent) t.BackColor = c;
                 themes.Add(t.Name, t);
             }
             foreach (var (n, c) in schemes)
@@ -136,6 +139,7 @@
                     t.TitleForeColor = w;
                     t.AuthorForeColor = w;
                 }
+                if (c.IsTransparent) t.BackColor = c;
                 themes.Add(t.Name, t);
             }
             foreach (var (n, c) in schemes)
@@ -149,6 +153,7 @@
                     t.AuthorBackColor = b;
                     t.AuthorForeColor = w;
                 }
+                if (c.IsTransparent) t.BackColor = c;
                 themes.Add(t.Name, t);
             }
             return themes;

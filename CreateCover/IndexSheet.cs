@@ -17,6 +17,7 @@ namespace CreateCover
 
             // Could be a resource but extracting, tokenising, and writing it isn't worth it just for this.
             var html = new StringBuilder();
+            var transparent = parser.IsFlagProvided("transparent");
 
             // Preamble and styling.
             html.AppendLine("<html lang=\"en\">");
@@ -29,6 +30,7 @@ namespace CreateCover
             html.AppendLine("    h1{font-size:2rem;letter-spacing:-1px;}");
             html.AppendLine("    div{display:inline-block;margin:0.75rem;}");
             html.AppendLine("    div.large{padding-top:2rem;}");
+            html.AppendLine("    p.info{color:#930;font-size:1.3rem;}");
             html.AppendLine("    h2{margin:2rem 0 1rem 0;text-align:center;}");
             html.AppendLine("    h3{font-size:1rem;font-weight:normal;margin:0;text-align:center;}");
             html.AppendLine("    a{margin:2rem auto;text-align:center;color:#fff;padding:0.5rem 2rem;background:#5186cf;text-decoration:none;}");
@@ -66,6 +68,11 @@ namespace CreateCover
             if (parser.IsFlagProvided("debug"))
                 html.AppendLine("<br/><strong>Generated in -debug mode</strong> so some theming is removed to improve visibility of the boundary boxes.");
             html.AppendLine("</p>");
+
+            // Warn about transparency.
+            if (transparent)
+                html.AppendLine("  <p class=\"info\">TRANSPARENCY was requested.<br/>Thumbnail colours are representative only; the full size version at the base will have no background.</p>");
+
             var themed = images
                 .Select(x => Theme.GetStandardTheme(x.Key))
                 .OrderBy(x => x.Grouping)
@@ -82,10 +89,11 @@ namespace CreateCover
                 var svg = images[theme.Name];
                 var base64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(svg));
                 var hint = $"Theme: `{theme.Name}` -- click to draw a 900x1350 PNG version below";
-                var handler = $" onclick=\"draw(this, '{base64}', '{slug}', '{theme.Name.Slugify()}')\"";
+                var nameSlug = theme.Name.Slugify() + (transparent ? "-transparent" : "");
+                var handler = $" onclick=\"draw(this, '{base64}', '{slug}', '{nameSlug}')\"";
                 html.AppendLine($"  <div class=\"thumbnail\">");
                 html.AppendLine($"    <h3>{theme.Colouring}</h3>");
-                html.AppendLine($"    <div class=\"small\"{handler} title=\"{hint}\">{svg}</div>");
+                html.AppendLine($"    <div style=\"background:{theme.BackColor};\" class=\"small\"{handler} title=\"{hint}\">{svg}</div>");
                 html.AppendLine($"  </div>");
                 lastGroup = theme.Grouping;
             }

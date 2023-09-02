@@ -3,7 +3,13 @@
 Generate themed 900x1350 pixel book covers (SVG and PNG).
 Supports 4 themes x 20 colours using a standard (and auto-arranging) layout.
 
-*(Examples are at the bottom.)*
+Includes optional *transparent backgrounds* - generate a cover PNG with transparency and lay it on top of another image or photo to let that image show through.
+
+Licensed under the [AGPL](./LICENSE.txt).
+
+![Sample cover image](./00.png)
+
+*(More examples further down.)*
 
 ## Contents
 
@@ -35,7 +41,13 @@ CreateCover
 
 On Linux the commands should be similar though the binary copied will obviously not be the Mac one.
 
-On Windows place it anywhere convenient. Use your *Control Panel*'s *Environment Variables* options to either find a place in your `PATH` to place it or to add a new location to that `PATH`.
+On Windows put it anywhere convenient. Use your *Control Panel*'s *Environment Variables* options to either find somewhere in your `PATH` to place it or to add a new location to that `PATH`. For example if you have `C:\Apps` in your `PATH` you could use:
+
+```bat
+cd <project>
+copy ..\builds\win10-x64\CreateCover.exe C:\Apps\CreateCover.exe
+CreateCover
+```
 
 ## To generate a cover
 
@@ -45,7 +57,7 @@ Example commands for when running directly from source (with dotnet 7+ installed
 cd <project>
 dotnet run -- -author "SIMON R GREEN" -file "../example-covers.html" -series "Hawk & Fisher 1-3" -subtitlefont "Tahoma,90" -subtitle "Hawk and Fisher|Winner Takes All|The God Killer" -title "Swords|of|Haven" -scaleauthor -scaleseries
 dotnet run -- -author "SIMON R GREEN" -file "../example-covers.html" -series "Hawk & Fisher 4-6" -subtitlefont "Tahoma,70" -subtitle "Wolf in the Fold|Guard Against Dishonor|The Bones of Haven" -title "Guards|of|Haven" -scaleauthor -scaleseries
-dotnet run -- -file "../example-covers.html" -title "Down|Among|the|Dead Men" -author "SIMON R GREEN" -series "Forest Kingdom 3" -authorfont "Tahoma,170" -seriesfont "Tahoma,90" -scaleauthor
+dotnet run -- -file "..\example-covers.html" -title "Down|Among|the|Dead Men" -author "SIMON R GREEN" -series "Forest Kingdom 3" -authorfont "Tahoma,200" -scaleauthor -scaleseries
 ```
 
 If you've added it to your path it's simpler (no dotnet installation required):
@@ -54,7 +66,7 @@ If you've added it to your path it's simpler (no dotnet installation required):
 cd <wherever>
 CreateCover -author "SIMON R GREEN" -file "../example-covers.html" -series "Hawk & Fisher 1-3" -subtitlefont "Tahoma,90" -subtitle "Hawk and Fisher|Winner Takes All|The God Killer" -title "Swords|of|Haven" -scaleauthor -scaleseries
 CreateCover -author "SIMON R GREEN" -file "../example-covers.html" -series "Hawk & Fisher 4-6" -subtitlefont "Tahoma,70" -subtitle "Wolf in the Fold|Guard Against Dishonor|The Bones of Haven" -title "Guards|of|Haven" -scaleauthor -scaleseries
-CreateCover -file "../example-covers.html" -title "Down|Among|the|Dead Men" -author "SIMON R GREEN" -series "Forest Kingdom 3" -authorfont "Tahoma,170" -seriesfont "Tahoma,90" -scaleauthor
+CreateCover -file "..\example-covers.html" -title "Down|Among|the|Dead Men" -author "SIMON R GREEN" -series "Forest Kingdom 3" -authorfont "Tahoma,200" -scaleauthor -scaleseries
 ```
 
 ### Supported options
@@ -67,18 +79,19 @@ Generate themed 900x1350 pixel PNG and SVG book covers
 
 OPTIONS
 
-  -author        text  * the book author (eg "JRR Tolkien")  
   -file          text  * where to write the output  [covers.html]
-  -series        text  * the book series (eg "The Lord of the Rings 1")  
-  -title         text  * the book title (eg "The | Fellowship | of the | Ring")  
+  -title         text  * the book title (eg "The | Fellowship | of the | Ring")
+  -subtitle      text    the book subtitle (eg titles in a box set)
+  -author        text  * the book author (eg "JRR Tolkien")
+  -series        text  * the book series (eg "The Lord of the Rings 1")
+  -titlefont     text    title font name,pixels  [Impact,180]
+  -subtitlefont  text    subtitle font,pixels  [Tahoma,75]
   -authorfont    text    author font,pixels  [Tahoma,110]
   -seriesfont    text    series font,pixels  [Tahoma,100]
-  -subtitle      text    the book subtitle (eg titles in a box set)  
-  -subtitlefont  text    subtitle font,pixels  [Tahoma,75]
-  -titlefont     text    title font name,pixels  [Impact,180]
-  -debug                 show extra debugging info
+  -transparent           the cover has no background colour
   -scaleauthor           scale author name to fit its area
   -scaleseries           scale series name to fit its area
+  -debug                 show extra debugging info
 
   * is required, values in square brackets are defaults
 ```
@@ -96,6 +109,10 @@ The *subtitle* options relate to smaller text that can appear below the title.
 Usually this is not necessary but it could be used for example in cases like *The Hobbit* where the subtitle could be *There and Back Again*.
 It might also be used to list individual book names where the title is for an omnibus edition or collection. Realistically, three at the most due to space constraints.
 
+Selecting `transparent` will still render the themed thumbnails with background colours, but when they are clicked the full size image at the base will be transparent.  Many themes will look the same when drawn large; this is correct as the background colour was their only differentiation.  Nevertheless, even with transparency it's worth generating the larger version by clicking the theme with the *expected* final colour, as the anti-aliasing inherent in the lettering on the PNG will be more accurate.
+
+*Technical note:* using your browser's `inspect` option on a thumbnail's SVG element will usually allow you to export that node for use elsewhere (eg save to a file and open in Inkscape).  Despite the thumbnail appearance, the SVG correctly excludes the background if transparency was requested.
+
 The `debug` option adds bounding boxes drawn around the text areas in the covers (to help you fine-tune font sizes etc if required).
 
 ### Exclamation marks
@@ -111,12 +128,10 @@ Another option which often works is to use the double quotes but with an *escape
 
 Here are some sample outputs.
 All were originally produced at 900x1350 but have been scaled down to 200x300 for use here.
-The second one was produced in `-debug` mode which adds boundary boxes for the text (and restricts the colours to help with the box visibility).
+The second one was produced in `-debug` mode which adds boundary boxes for the text (and restricts the colours to help with the box visibility), and the third was drawn using `-transparent` (shown here with a striped background replacing the transparent areas for clarity and for consistency across browsers).
 
-![01](./01.png)
-![02](./02.png)
-![03](./03.png)
-![04](./04.png)
+![01](./01.png) ![02](./02.png) ![03](./03.png) ![04](./04.png)
+![05](./05.png) ![06](./06.png) ![07](./07.png) ![08](./08.png)
 
 ## Generating new builds
 

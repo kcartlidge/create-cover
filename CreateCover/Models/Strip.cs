@@ -12,6 +12,7 @@
         public Font Font;
         public string Content;
         public bool Scalable;
+        public bool Transparent;
 
         private readonly int PadX;
         private readonly int PadY;
@@ -25,7 +26,8 @@
             Color foreColor,
             Font font,
             string content,
-            bool scalable)
+            bool scalable,
+            bool transparent)
         {
             Extent = extent;
             PadX = padX;
@@ -34,6 +36,7 @@
             ForeColor = foreColor;
             Font = font;
             Scalable = scalable;
+            Transparent = transparent;
             Content = content.Replace("\\n", "\n").Replace("|", "\n");
             TextArea = new Extent(0, 0, 0, 0);
             BackgroundArea = new Extent(0, 0, 0, 0);
